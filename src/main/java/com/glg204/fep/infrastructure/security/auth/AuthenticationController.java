@@ -55,9 +55,9 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
-        var jwt = jwtService.generateToken(request.getUsername());
+        var jwt = jwtService.generateToken(request.getEmail());
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 }
