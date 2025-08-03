@@ -45,6 +45,11 @@ public class User implements UserDetails {
         return List.of(role);
     }
 
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
