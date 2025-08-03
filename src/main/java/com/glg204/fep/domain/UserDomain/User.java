@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,10 +26,19 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
+    private String firstName;
+
+    private String lastName;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
+    private LocalDateTime createdAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
