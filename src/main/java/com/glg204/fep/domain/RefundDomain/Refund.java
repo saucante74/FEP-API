@@ -21,7 +21,10 @@ public class Refund {
 
     private LocalDateTime refundDate;
 
+    @Enumerated(EnumType.STRING)
+    private RefundStatus status;
+
     @ManyToOne
     private Loan loan;
-
 }
+

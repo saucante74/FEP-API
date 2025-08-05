@@ -3,13 +3,17 @@ package com.glg204.fep.application.RefundApplication;
 import com.glg204.fep.domain.RefundDomain.RefundStatus;
 import lombok.*;
 
-@Getter @Setter
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefundRequestDTO {
-    private Long loanId;
+@Builder
+public class RefundResponseDTO {
+    private Long id;
     private double amount;
+    private LocalDateTime refundDate;
     private RefundStatus status;
+    private Long loanId;
 }
-
-

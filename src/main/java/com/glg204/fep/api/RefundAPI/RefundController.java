@@ -1,6 +1,7 @@
 package com.glg204.fep.api.RefundAPI;
 
 import com.glg204.fep.application.RefundApplication.RefundRequestDTO;
+import com.glg204.fep.application.RefundApplication.RefundResponseDTO;
 import com.glg204.fep.application.RefundApplication.RefundService;
 import com.glg204.fep.domain.RefundDomain.Refund;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class RefundController {
 
     @PostMapping
     public ResponseEntity<?> createRefund(@RequestBody RefundRequestDTO dto) {
-        Refund refund = refundService.createRefund(dto);
+        RefundResponseDTO refund = refundService.createRefund(dto);
         return ResponseEntity.ok(refund);
     }
 }
