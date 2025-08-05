@@ -3,7 +3,6 @@ package com.glg204.fep.api.RefundAPI;
 import com.glg204.fep.application.RefundApplication.RefundRequestDTO;
 import com.glg204.fep.application.RefundApplication.RefundResponseDTO;
 import com.glg204.fep.application.RefundApplication.RefundService;
-import com.glg204.fep.domain.RefundDomain.Refund;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

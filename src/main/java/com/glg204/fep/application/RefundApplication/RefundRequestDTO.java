@@ -9,7 +9,6 @@ import lombok.*;
 public class RefundRequestDTO {
     private Long loanId;
     private double amount;
-    private RefundStatus status;
 }
 
 
