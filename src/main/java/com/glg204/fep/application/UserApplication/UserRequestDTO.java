@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Data
-public class UserDTO {
+public class UserRequestDTO {
     private String firstName;
     private String lastName;
     private String email;
