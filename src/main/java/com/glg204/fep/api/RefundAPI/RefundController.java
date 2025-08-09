@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/refunds")
 @RequiredArgsConstructor
@@ -15,9 +17,31 @@ public class RefundController {
     private final RefundService refundService;
 
     @PostMapping
-    public ResponseEntity<?> createRefund(@RequestBody RefundRequestDTO dto) {
-        RefundResponseDTO refund = refundService.createRefund(dto);
-        return ResponseEntity.ok(refund);
+    public ResponseEntity<RefundResponseDTO> createRefund(@RequestBody RefundRequestDTO dto) {
+        return ResponseEntity.ok(refundService.createRefund(dto));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RefundResponseDTO>> getAllRefunds() {
+        return ResponseEntity.ok(refundService.getAllRefunds());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RefundResponseDTO> getRefundById(@PathVariable Long id) {
+        return ResponseEntity.ok(refundService.getRefundById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RefundResponseDTO> updateRefund(
+            @PathVariable Long id,
+            @RequestBody RefundRequestDTO dto
+    ) {
+        return ResponseEntity.ok(refundService.updateRefund(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRefund(@PathVariable Long id) {
+        refundService.deleteRefund(id);
+        return ResponseEntity.noContent().build();
     }
 }
-

@@ -7,8 +7,11 @@ import com.glg204.fep.infrastructure.LoanInfrastructure.LoanRepository;
 import com.glg204.fep.infrastructure.RefundInfrastructure.RefundRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +31,39 @@ public class RefundService {
                 .loan(loan)
                 .build();
 
-        Refund savedRefund = refundRepository.save(refund);
-        return toDto(savedRefund);
+        return toDto(refundRepository.save(refund));
+    }
+
+    public List<RefundResponseDTO> getAllRefunds() {
+        return refundRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public RefundResponseDTO getRefundById(Long id) {
+        return refundRepository.findById(id)
+                .map(this::toDto)
+                .orElseThrow(() -> new IllegalArgumentException("Refund not found"));
+    }
+
+    @Transactional
+    public RefundResponseDTO updateRefund(Long id, RefundRequestDTO dto) {
+        Refund refund = refundRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Refund not found"));
+
+        Loan loan = loanRepository.findById(dto.getLoanId())
+                .orElseThrow(() -> new IllegalArgumentException("Loan not found"));
+
+        refund.setAmount(dto.getAmount());
+        refund.setLoan(loan);
+
+        return toDto(refundRepository.save(refund));
+    }
+
+    @Transactional
+    public void deleteRefund(Long id) {
+        refundRepository.deleteById(id);
     }
 
     private RefundResponseDTO toDto(Refund refund) {
@@ -41,7 +75,4 @@ public class RefundService {
                 .loanId(refund.getLoan().getId())
                 .build();
     }
-
 }
-
-
