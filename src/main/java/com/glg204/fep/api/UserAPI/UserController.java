@@ -1,5 +1,6 @@
 package com.glg204.fep.api.UserAPI;
 
+import com.glg204.fep.application.UserApplication.UserRequestDTO;
 import com.glg204.fep.application.UserApplication.UserResponseDTO;
 import com.glg204.fep.application.UserApplication.UserService;
 import com.glg204.fep.domain.UserDomain.User;
@@ -26,19 +27,18 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-//        return ResponseEntity.ok(userService.updateUser(id, userDTO));
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-//        userService.deleteUser(id);
-//        return ResponseEntity.noContent().build();
-//    }
 
-    // VALIDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
+        return ResponseEntity.ok(userService.updateUser(id, userRequestDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}/validate")
     public ResponseEntity<Void> validateUser(@PathVariable Long id) {
         userService.validateUser(id);

@@ -3,6 +3,7 @@ package com.glg204.fep.application.UserApplication;
 import com.glg204.fep.domain.UserDomain.User;
 import com.glg204.fep.domain.UserDomain.UserStatus;
 import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,24 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return this.toDto(user);
+    }
+
+    @Transactional
+    public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
+        System.out.println("DTO reçu : " + dto);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setLastName(dto.getLastName());
+        user.setFirstName(dto.getFirstName());
+        user.setEmail(dto.getEmail());
+
+        userRepository.save(user);
+
+        return this.toDto(user);
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 
     public void validateUser(Long userId) {
