@@ -72,7 +72,7 @@ public class RefundService {
                 .amount(refund.getAmount())
                 .refundDate(refund.getRefundDate())
                 .status(refund.getStatus())
-                .loanId(refund.getLoan().getId())
+                .loanReference(refund.getLoan().getReference())
                 .build();
     }
 }

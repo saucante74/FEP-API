@@ -10,10 +10,11 @@ import java.time.LocalDateTime;
 @Builder
 public class ReportResponseDTO {
     private Long id;
-    private String reason;
+    private ReportReason reason;
     private String reporterEmail;
     private String reportedUserEmail;
     private LocalDateTime reportDate;
-    private ReportReason status;
+    private boolean open;
 }
+
 

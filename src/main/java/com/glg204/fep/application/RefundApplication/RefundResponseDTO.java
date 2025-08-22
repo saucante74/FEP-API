@@ -12,8 +12,9 @@ import java.time.LocalDateTime;
 @Builder
 public class RefundResponseDTO {
     private Long id;
-    private double amount;
+    private String loanReference;
     private LocalDateTime refundDate;
+    private double amount;
     private RefundStatus status;
-    private Long loanId;
 }
+
