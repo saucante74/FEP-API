@@ -18,8 +18,9 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String reference;
     private BigDecimal amount;
-    private Double interestRate; // en pourcentage
+    private Double interestRate;
     private Integer durationInMonths;
 
     private LocalDate startDate;

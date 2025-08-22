@@ -70,11 +70,11 @@ public class ReportService {
     private ReportResponseDTO toDto(Report report) {
         return ReportResponseDTO.builder()
                 .id(report.getId())
-                .reason(report.getReason().name())
+                .reason(report.getReason())
                 .reporterEmail(report.getReporter().getEmail())
                 .reportedUserEmail(report.getReportedUser().getEmail())
                 .reportDate(report.getReportDate())
-                .status(report.getReason())
+                .open(report.isOpen())
                 .build();
     }
 }

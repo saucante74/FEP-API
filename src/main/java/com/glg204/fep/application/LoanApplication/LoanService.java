@@ -1,5 +1,6 @@
 package com.glg204.fep.application.LoanApplication;
 
+import com.glg204.fep.application.UserApplication.UserResponseDTO;
 import com.glg204.fep.domain.LoanDomain.Loan;
 import com.glg204.fep.domain.LoanDomain.LoanStatus;
 import com.glg204.fep.domain.UserDomain.User;
@@ -72,16 +73,43 @@ public class LoanService {
     }
 
     private LoanResponseDTO toDto(Loan loan) {
+        if (loan == null) {
+            return null;
+        }
+
         return LoanResponseDTO.builder()
+                .id(loan.getId())
+                .reference(loan.getReference())
                 .amount(loan.getAmount())
                 .interestRate(loan.getInterestRate())
                 .durationInMonths(loan.getDurationInMonths())
-                .status(String.valueOf(loan.getStatus()))
-                .borrowerId(
+                .status(loan.getStatus() != null ? loan.getStatus().name() : null)
+                .borrower(
                         loan.getBorrower() != null
-                                ? loan.getBorrower().getId()
+                                ? toUserDto(loan.getBorrower())
+                                : null
+                )
+                .lender(
+                        loan.getLender() != null
+                                ? toUserDto(loan.getLender())
                                 : null
                 )
                 .build();
     }
+
+    private UserResponseDTO toUserDto(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        return UserResponseDTO.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .status(user.getStatus())
+                .build();
+    }
+
 }
