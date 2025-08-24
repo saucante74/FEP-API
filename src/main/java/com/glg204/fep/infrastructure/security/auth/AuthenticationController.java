@@ -1,6 +1,7 @@
 package com.glg204.fep.infrastructure.security.auth;
 
 import com.glg204.fep.domain.UserDomain.User;
+import com.glg204.fep.domain.UserDomain.UserStatus;
 import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
 import com.glg204.fep.infrastructure.security.jwt.JwtService;
 import jakarta.validation.Valid;
@@ -11,6 +12,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -45,6 +48,8 @@ public class AuthenticationController {
                 .firstName(request.getFirstname())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
+                .status(UserStatus.PENDING_VALIDATION)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         userRepository.save(user);

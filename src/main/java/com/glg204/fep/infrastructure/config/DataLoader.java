@@ -42,24 +42,28 @@ public class DataLoader implements CommandLineRunner {
 
         User alice = userRepository.save(User.builder()
                 .firstName("Alice").lastName("Dupont")
+                .username("alice47")
                 .email("alice@example.com").password(passwordEncoder.encode("secret"))
                 .role(UserRole.LENDER).status(UserStatus.VALIDATED)
                 .createdAt(LocalDateTime.now().minusMonths(6)).build());
 
         User bob = userRepository.save(User.builder()
                 .firstName("Bob").lastName("Martin")
+                .username("Bob78")
                 .email("bob@example.com").password(passwordEncoder.encode("secret"))
                 .role(UserRole.BORROWER).status(UserStatus.VALIDATED)
                 .createdAt(LocalDateTime.now().minusMonths(3)).build());
 
         User claire = userRepository.save(User.builder()
                 .firstName("Claire").lastName("Durand")
+                .username("Claire14")
                 .email("claire@example.com").password(passwordEncoder.encode("secret"))
                 .role(UserRole.BORROWER).status(UserStatus.VALIDATED)
                 .createdAt(LocalDateTime.now().minusMonths(2)).build());
 
         User david = userRepository.save(User.builder()
                 .firstName("David").lastName("Moreau")
+                .username("David85")
                 .email("david@example.com").password(passwordEncoder.encode("secret"))
                 .role(UserRole.LENDER).status(UserStatus.VALIDATED)
                 .createdAt(LocalDateTime.now().minusMonths(1)).build());
