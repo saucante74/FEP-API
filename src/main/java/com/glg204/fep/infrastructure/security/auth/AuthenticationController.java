@@ -1,9 +1,9 @@
 package com.glg204.fep.infrastructure.security.auth;
 
 import com.glg204.fep.domain.UserDomain.User;
-import com.glg204.fep.domain.UserDomain.UserRole;
 import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
 import com.glg204.fep.infrastructure.security.jwt.JwtService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         System.out.println("REGISTER endpoint hit");
 
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -41,8 +41,10 @@ public class AuthenticationController {
         var user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
+                .lastName(request.getLastname())
+                .firstName(request.getFirstname())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(UserRole.USER)
+                .role(request.getRole())
                 .build();
 
         userRepository.save(user);
