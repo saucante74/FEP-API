@@ -23,51 +23,70 @@ public class DashboardService {
     private final UserRepository userRepository;
     private final ReportRepository reportRepository;
     private final LoanDomainService loanDomainService = new LoanDomainService();
+    private final RefundDomainService refundDomainService = new RefundDomainService();
 
     public DashboardStatsDTO getDashboardStats() {
-        List<Loan> loans = loanRepository.findAll();
-        List<Refund> refunds = refundRepository.findAll();
-
-        FinancialStatsDTO financial = FinancialStatsDTO.builder()
-                .averageInterestRate(loanDomainService.calculateAverageInterestRate(loans))
-                .defaultRate(loanDomainService.calculateDefaultRate(loans))
-                .averageLoanDuration(loanDomainService.calculateAverageLoanDuration(loans))
+        return DashboardStatsDTO.builder()
+                .global(getGlobalStats())
+                .financial(getFinancialStats())
+                .refunds(getRefundStats())
+                .system(getSystemStats())
                 .build();
+    }
 
-        GlobalStatsDTO global = GlobalStatsDTO.builder()
-                .totalFinanced(loans.stream().mapToInt(l -> l.getAmount().intValue()).sum())
+    public GlobalStatsDTO getGlobalStats() {
+        List<Loan> loans = loanRepository.findAll();
+
+        long newCustomers = userRepository.findAll().stream()
+                .filter(u -> u.getCreatedAt() != null &&
+                        u.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusMonths(1)))
+                .count();
+
+        return GlobalStatsDTO.builder()
+                .totalFinanced(loans.stream()
+                        .map(Loan::getAmount)
+                        .mapToInt(BigDecimal::intValue)
+                        .sum())
                 .totalRevenue((int) loans.stream()
                         .map(loanDomainService::calculateTotalInterest)
                         .mapToDouble(BigDecimal::doubleValue)
                         .sum())
                 .totalCustomers((int) userRepository.count())
-                .newCustomers(2)
-                .loansInProgress((int) loans.stream().filter(l -> l.getStatus() == LoanStatus.IN_PROGRESS).count())
-                .loansRepaid((int) loans.stream().filter(l -> l.getStatus() == LoanStatus.REPAID).count())
+                .newCustomers((int) newCustomers)
+                .loansInProgress((int) loans.stream()
+                        .filter(l -> l.getStatus() == LoanStatus.IN_PROGRESS).count())
+                .loansRepaid((int) loans.stream()
+                        .filter(l -> l.getStatus() == LoanStatus.REPAID).count())
                 .refundsInProgress((int) refundRepository.count())
                 .build();
+    }
 
-        SystemStatsDTO system = SystemStatsDTO.builder()
-                .alertsCount((int) reportRepository.findAll().stream().filter(Report::isOpen).count())
-                .lastUpdate(java.time.LocalDateTime.now().toString())
+    public FinancialStatsDTO getFinancialStats() {
+        List<Loan> loans = loanRepository.findAll();
+
+        return FinancialStatsDTO.builder()
+                .averageInterestRate(loanDomainService.calculateAverageInterestRate(loans))
+                .defaultRate(loanDomainService.calculateDefaultRate(loans))
+                .averageLoanDuration(loanDomainService.calculateAverageLoanDuration(loans))
                 .build();
+    }
 
-        RefundDomainService refundDomainService = new RefundDomainService();
+    public RefundStatsDTO getRefundStats() {
+        List<Refund> refunds = refundRepository.findAll();
 
-        RefundStatsDTO refundsStats = RefundStatsDTO.builder()
+        return RefundStatsDTO.builder()
                 .monthlyRefunds(refundDomainService.calculateMonthlyRefunds(refunds))
                 .pendingRefundsAmount(refundDomainService.calculatePendingRefundsAmount(refunds))
                 .expectedRevenueNextMonth(refundDomainService.calculateExpectedRevenueNextMonth(refunds))
                 .upcomingRefunds(refundDomainService.findUpcomingRefunds(refunds))
                 .lateRefunds(refundDomainService.findLateRefunds(refunds))
                 .build();
+    }
 
-        return DashboardStatsDTO.builder()
-                .global(global)
-                .financial(financial)
-                .refunds(refundsStats)
-                .system(system)
+    public SystemStatsDTO getSystemStats() {
+        return SystemStatsDTO.builder()
+                .alertsCount((int) reportRepository.findAll().stream().filter(Report::isOpen).count())
+                .lastUpdate(java.time.LocalDateTime.now().toString())
                 .build();
     }
 }
-
