@@ -4,6 +4,7 @@ import com.glg204.fep.application.ReportApplication.ReportRequestDTO;
 import com.glg204.fep.application.ReportApplication.ReportResponseDTO;
 import com.glg204.fep.application.ReportApplication.ReportService;
 import com.glg204.fep.domain.UserDomain.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ public class ReportController {
 
     @PostMapping
     public ResponseEntity<ReportResponseDTO> createReport(
+            @Valid
             @RequestBody ReportRequestDTO dto,
             Authentication authentication
     ) {
@@ -39,6 +41,7 @@ public class ReportController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ReportResponseDTO> updateReport(
+            @Valid
             @PathVariable Long id,
             @RequestBody ReportRequestDTO dto
     ) {

@@ -2,6 +2,7 @@ package com.glg204.fep.application.LoanApplication;
 
 import com.glg204.fep.application.UserApplication.UserResponseDTO;
 import com.glg204.fep.domain.LoanDomain.Loan;
+import com.glg204.fep.domain.LoanDomain.LoanDomainService;
 import com.glg204.fep.domain.LoanDomain.LoanStatus;
 import com.glg204.fep.domain.UserDomain.User;
 import com.glg204.fep.infrastructure.LoanInfrastructure.LoanRepository;
@@ -25,6 +26,7 @@ public class LoanService {
                 .orElseThrow(() -> new NoSuchElementException("Borrower not found"));
 
         Loan loan = new Loan();
+        loan.setReference(LoanDomainService.generateReference());
         loan.setAmount(dto.getAmount());
         loan.setInterestRate(dto.getInterestRate());
         loan.setDurationInMonths(dto.getDurationInMonths());
@@ -58,7 +60,7 @@ public class LoanService {
         loan.setAmount(dto.getAmount());
         loan.setInterestRate(dto.getInterestRate());
         loan.setDurationInMonths(dto.getDurationInMonths());
-        loan.setStatus(LoanStatus.valueOf(dto.getStatus()));
+        loan.setStatus(LoanStatus.valueOf(String.valueOf(dto.getStatus())));
         loan.setBorrower(borrower);
 
         loanRepository.save(loan);

@@ -1,5 +1,7 @@
 package com.glg204.fep.application.ReportApplication;
 
+import com.glg204.fep.domain.ReportDomain.ReportReason;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class ReportRequestDTO {
     private Long reportedUserId;
-    private String reason;
+
+    @NotNull(message = "Reason is required")
+    private ReportReason reason;
 }
 

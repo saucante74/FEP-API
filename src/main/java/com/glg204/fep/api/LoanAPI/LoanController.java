@@ -4,6 +4,7 @@ import com.glg204.fep.application.LoanApplication.LoanRequestDTO;
 import com.glg204.fep.application.LoanApplication.LoanResponseDTO;
 import com.glg204.fep.application.LoanApplication.LoanService;
 import com.glg204.fep.domain.UserDomain.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,7 +20,7 @@ public class LoanController {
     private final LoanService loanService;
 
     @PostMapping
-    public ResponseEntity<LoanResponseDTO> createLoan(@RequestBody LoanRequestDTO dto,
+    public ResponseEntity<LoanResponseDTO> createLoan(@Valid @RequestBody LoanRequestDTO dto,
                                                       Authentication authentication) {
         User lender = (User) authentication.getPrincipal();
         return ResponseEntity.ok(loanService.createLoan(dto, lender));
@@ -36,7 +37,7 @@ public class LoanController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LoanResponseDTO> updateLoan(@PathVariable Long id,
+    public ResponseEntity<LoanResponseDTO> updateLoan(@Valid @PathVariable Long id,
                                                       @RequestBody LoanRequestDTO dto) {
         return ResponseEntity.ok(loanService.updateLoan(id, dto));
     }
