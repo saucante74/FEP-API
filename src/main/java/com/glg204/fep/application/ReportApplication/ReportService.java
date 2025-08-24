@@ -25,7 +25,7 @@ public class ReportService {
                 .orElseThrow(() -> new IllegalArgumentException("Reported user not found"));
 
         Report report = Report.builder()
-                .reason(ReportReason.valueOf(dto.getReason()))
+                .reason(ReportReason.valueOf(String.valueOf(dto.getReason())))
                 .reporter(reporter)
                 .reportedUser(reportedUser)
                 .reportDate(LocalDateTime.now())
@@ -57,7 +57,7 @@ public class ReportService {
                 .orElseThrow(() -> new IllegalArgumentException("Reported user not found"));
 
         report.setReportedUser(reportedUser);
-        report.setReason(ReportReason.valueOf(dto.getReason()));
+        report.setReason(ReportReason.valueOf(String.valueOf(dto.getReason())));
 
         return toDto(reportRepository.save(report));
     }

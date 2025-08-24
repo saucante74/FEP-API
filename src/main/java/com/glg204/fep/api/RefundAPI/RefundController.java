@@ -3,6 +3,7 @@ package com.glg204.fep.api.RefundAPI;
 import com.glg204.fep.application.RefundApplication.RefundRequestDTO;
 import com.glg204.fep.application.RefundApplication.RefundResponseDTO;
 import com.glg204.fep.application.RefundApplication.RefundService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class RefundController {
     private final RefundService refundService;
 
     @PostMapping
-    public ResponseEntity<RefundResponseDTO> createRefund(@RequestBody RefundRequestDTO dto) {
+    public ResponseEntity<RefundResponseDTO> createRefund(@Valid @RequestBody RefundRequestDTO dto) {
         return ResponseEntity.ok(refundService.createRefund(dto));
     }
 
@@ -33,6 +34,7 @@ public class RefundController {
 
     @PutMapping("/{id}")
     public ResponseEntity<RefundResponseDTO> updateRefund(
+            @Valid
             @PathVariable Long id,
             @RequestBody RefundRequestDTO dto
     ) {
