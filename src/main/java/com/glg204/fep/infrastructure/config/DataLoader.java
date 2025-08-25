@@ -73,7 +73,7 @@ public class DataLoader implements CommandLineRunner {
             User borrower = (i % 3 == 0) ? bob : claire;
 
             Loan loan = loanRepository.save(Loan.builder()
-                    .reference("LN-2025-" + String.format("%04d", i))
+                    .reference("LN-20250825-092347282-" + String.format("%04d", i))
                     .amount(BigDecimal.valueOf(2000 + random.nextInt(20000)))
                     .interestRate(3.0 + random.nextDouble() * 5)
                     .durationInMonths(6 + random.nextInt(36))

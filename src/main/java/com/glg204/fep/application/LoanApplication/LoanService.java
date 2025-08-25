@@ -26,13 +26,13 @@ public class LoanService {
                 .orElseThrow(() -> new NoSuchElementException("Borrower not found"));
 
         Loan loan = new Loan();
-        loan.setReference(LoanDomainService.generateReference());
         loan.setAmount(dto.getAmount());
         loan.setInterestRate(dto.getInterestRate());
         loan.setDurationInMonths(dto.getDurationInMonths());
         loan.setStatus(LoanStatus.PENDING);
         loan.setLender(lender);
         loan.setBorrower(borrower);
+        loan.setReference(LoanDomainService.generateReference());
 
         loanRepository.save(loan);
         return toDto(loan);

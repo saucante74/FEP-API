@@ -4,13 +4,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 public class LoanDomainService {
 
 
     private static final String PREFIX = "LN";
-    private static final DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy");
-    private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
 
     public BigDecimal calculateTotalInterest(Loan loan) {
         return loan.getAmount()
@@ -44,16 +43,17 @@ public class LoanDomainService {
 
 
 
+
     public static String generateReference() {
         LocalDateTime now = LocalDateTime.now();
 
-        String year = now.format(YEAR_FORMATTER);
-        String timestamp = now.format(TIMESTAMP_FORMATTER);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmssSSS");
+        String timestamp = now.format(formatter);
+        String uuidPart = UUID.randomUUID().toString().substring(0, 4).toUpperCase();
 
-        String uniquePart = timestamp.substring(timestamp.length() - 4);
-
-        return String.format("%s-%s-%s", PREFIX, year, uniquePart);
+        return String.format("%s-%s-%s", PREFIX, timestamp, uuidPart);
     }
+
 
 }
 
