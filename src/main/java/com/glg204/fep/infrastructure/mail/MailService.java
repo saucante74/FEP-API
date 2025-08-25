@@ -1,4 +1,5 @@
 package com.glg204.fep.infrastructure.mail;
 
-public class MailService {
+public interface MailService {
+    void send(String to, String subject, String body);
 }
