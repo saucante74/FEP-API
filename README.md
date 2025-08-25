@@ -20,3 +20,13 @@ docker-compose -f docker-compose.dev.yml up -d
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
+3.**Relaunch prod**
+```bash
+docker compose -f docker-compose.prod.yml down -v 
+docker compose -f docker-compose.prod.yml up --build -d           
+```
+
+3.**Launch dev**
+```bash
+docker compose -f docker-compose.dev.yml up --build -d          
+```

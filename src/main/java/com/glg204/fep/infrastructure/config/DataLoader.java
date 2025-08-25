@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 @Component
-@Profile({"dev", "docker"})
+@Profile({"local", "docker"})
 @RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
