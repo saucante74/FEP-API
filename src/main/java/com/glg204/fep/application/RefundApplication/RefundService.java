@@ -19,6 +19,7 @@ public class RefundService {
 
     private final RefundRepository refundRepository;
     private final LoanRepository loanRepository;
+    private final RefundNotificationService refundNotificationService;
 
     public RefundResponseDTO createRefund(RefundRequestDTO dto) {
         Loan loan = loanRepository.findById(dto.getLoanId())
@@ -31,7 +32,10 @@ public class RefundService {
                 .loan(loan)
                 .build();
 
-        return toDto(refundRepository.save(refund));
+        RefundResponseDTO responseDTO = toDto(refundRepository.save(refund));
+        refundNotificationService.sendRefundNotifications(refund);
+
+        return responseDTO;
     }
 
     public List<RefundResponseDTO> getAllRefunds() {

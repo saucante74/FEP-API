@@ -19,6 +19,7 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
+    private final ReportNotificationService reportNotificationService;
 
     public ReportResponseDTO createReport(ReportRequestDTO dto, User reporter) {
         User reportedUser = userRepository.findById(dto.getReportedUserId())
@@ -31,6 +32,9 @@ public class ReportService {
                 .reportDate(LocalDateTime.now())
                 .isOpen(true)
                 .build();
+
+        reportNotificationService.sendReportReceivedNotification(report);
+        reportNotificationService.sendReportEscalationNotification(report);
 
         return toDto(reportRepository.save(report));
     }

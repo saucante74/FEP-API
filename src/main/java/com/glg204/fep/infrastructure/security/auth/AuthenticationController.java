@@ -1,5 +1,6 @@
 package com.glg204.fep.infrastructure.security.auth;
 
+import com.glg204.fep.application.UserApplication.UserNotificationService;
 import com.glg204.fep.domain.UserDomain.User;
 import com.glg204.fep.domain.UserDomain.UserStatus;
 import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
@@ -24,6 +25,7 @@ public class AuthenticationController {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserNotificationService userNotificationService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
@@ -53,6 +55,7 @@ public class AuthenticationController {
                 .build();
 
         userRepository.save(user);
+        userNotificationService.sendRegistrationMail(user);
 
         var jwt = jwtService.generateToken(user.getUsername());
         return ResponseEntity.ok(new AuthenticationResponse(jwt));

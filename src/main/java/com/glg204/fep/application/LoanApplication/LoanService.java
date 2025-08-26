@@ -20,6 +20,7 @@ public class LoanService {
 
     private final LoanRepository loanRepository;
     private final UserRepository userRepository;
+    private final LoanNotificationService loanNotificationService;
 
     public LoanResponseDTO createLoan(LoanRequestDTO dto, User lender) {
         User borrower = userRepository.findById(dto.getBorrowerId())
@@ -35,6 +36,12 @@ public class LoanService {
         loan.setReference(LoanDomainService.generateReference());
 
         loanRepository.save(loan);
+        loanNotificationService.sendLoanRequestCreatedMail(
+                borrower.getEmail(),
+                borrower.getFirstName(),
+                loan.getReference()
+        );
+
         return toDto(loan);
     }
 
