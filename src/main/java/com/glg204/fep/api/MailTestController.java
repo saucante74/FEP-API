@@ -1,7 +1,7 @@
 package com.glg204.fep.api;
 
 
-import com.glg204.fep.infrastructure.mail.MailService;
+import com.glg204.fep.application.notification.MailService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -26,6 +26,7 @@ public class UserService {
         user.setRole(dto.getRole());
         user.setStatus(UserStatus.PENDING_VALIDATION);
         user.setCreatedAt(LocalDateTime.now());
+
         return userRepository.save(user);
     }
 

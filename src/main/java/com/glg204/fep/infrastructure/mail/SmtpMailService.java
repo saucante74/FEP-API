@@ -1,7 +1,7 @@
-package com.glg204.fep.domain.notification;
+package com.glg204.fep.infrastructure.mail;
 
 
-import com.glg204.fep.infrastructure.mail.MailService;
+import com.glg204.fep.application.notification.MailService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
