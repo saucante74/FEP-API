@@ -1,6 +1,8 @@
 package com.glg204.fep.infrastructure.security.auth;
 
+import com.glg204.fep.application.UserApplication.PasswordResetService;
 import com.glg204.fep.application.UserApplication.UserNotificationService;
+import com.glg204.fep.domain.UserDomain.PasswordResetToken;
 import com.glg204.fep.domain.UserDomain.User;
 import com.glg204.fep.domain.UserDomain.UserStatus;
 import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
@@ -27,6 +29,7 @@ public class AuthenticationController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserNotificationService userNotificationService;
+    private final PasswordResetService passwordResetService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
@@ -70,6 +73,33 @@ public class AuthenticationController {
         );
         var jwt = jwtService.generateToken(request.getEmail());
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    }
+
+
+    @PostMapping("/reset-password-request")
+    public ResponseEntity<Void> requestPasswordReset(@RequestParam String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        PasswordResetToken resetToken = passwordResetService.createToken(user);
+        String resetLink = "http://localhost:8080/reset-password?token=" + resetToken.getToken();
+
+        userNotificationService.sendPasswordResetMail(user, resetLink);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordRequest request) {
+        PasswordResetToken resetToken = passwordResetService.validateToken(request.getToken());
+
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        passwordResetService.deleteToken(request.getToken());
+
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}/validate")
