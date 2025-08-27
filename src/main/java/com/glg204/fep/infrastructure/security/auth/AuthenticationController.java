@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -69,6 +70,28 @@ public class AuthenticationController {
         );
         var jwt = jwtService.generateToken(request.getEmail());
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    }
+
+    @PutMapping("/{id}/validate")
+    public ResponseEntity<Void> validateUser(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+        user.setStatus(UserStatus.VALIDATED);
+        userRepository.save(user);
+
+        userNotificationService.sendAccountValidatedMail(user);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/block")
+    public ResponseEntity<Void> blockUser(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+        user.setStatus(UserStatus.BLOCKED);
+        userRepository.save(user);
+
+        userNotificationService.sendAccountBlockedMail(user);
+        return ResponseEntity.ok().build();
     }
 }
 

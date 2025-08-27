@@ -20,13 +20,13 @@ public class UserNotificationService {
         mailService.send(user.getEmail(), subject, body);
     }
 
-    public void sendAccountValidatedMail(String to, String firstname) {
+    public void sendAccountValidatedMail(User user) {
         String subject = "Votre compte est validé.";
-        String body = "Bonjour " + firstname + ",\n\n" +
+        String body = "Bonjour " + user.getFirstName() + ",\n\n" +
                 "Bonne nouvelle ! Votre compte vient d’être validé par notre équipe. " +
                 "Vous pouvez maintenant emprunter ou prêter via la plateforme.\n\n" +
                 "L’équipe FEP.";
-        mailService.send(to, subject, body);
+        mailService.send(user.getEmail(), subject, body);
     }
 
     public void sendPasswordResetMail(User user, String resetLink) {
@@ -37,13 +37,13 @@ public class UserNotificationService {
         mailService.send(user.getEmail(), subject, body);
     }
 
-    public void sendAccountBlockedMail(String to) {
+    public void sendAccountBlockedMail(User user) {
         String subject = "Votre compte a été suspendu.";
-        String body = "Bonjour,\n\n" +
+        String body = "Bonjour " + user.getFirstName() + ",\n\n" +
                 "Nous vous informons que votre compte a été suspendu. " +
                 "Merci de contacter notre support si vous pensez qu’il s’agit d’une erreur.\n\n" +
                 "L’équipe FEP.";
-        mailService.send(to, subject, body);
+        mailService.send(user.getEmail(), subject, body);
     }
 }
 
