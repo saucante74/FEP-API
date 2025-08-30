@@ -19,10 +19,11 @@ public class LoanDomainService {
 
     public double calculateAverageInterestRate(List<Loan> loans) {
         if (loans.isEmpty()) return 0.0;
-        return loans.stream()
+        double avg = loans.stream()
                 .mapToDouble(Loan::getInterestRate)
                 .average()
                 .orElse(0.0);
+        return Math.round(avg * 100.0) / 100.0;
     }
 
     public int calculateAverageLoanDuration(List<Loan> loans) {

@@ -16,8 +16,8 @@ docker-compose -f docker-compose.prod.yml up -d
 
 2.**Relaunch prod (with latest changes)**
 ```bash
-./gradlew clean bootJar
 docker compose -f docker-compose.prod.yml down -v 
+./gradlew clean bootJar
 docker compose -f docker-compose.prod.yml up --build -d           
 ```
 
