@@ -1,6 +1,7 @@
 package com.glg204.fep.application.LoanApplication;
 
 import com.glg204.fep.domain.LoanDomain.LoanStatus;
+import com.glg204.fep.infrastructure.validation.TwoDecimal;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class LoanRequestDTO {
     @NotNull(message = "Interest rate is required")
     @DecimalMin(value = "0.1", message = "Interest rate must be greater than 0")
     @DecimalMax(value = "100.0", message = "Interest rate must be less than or equal to 100")
+    @TwoDecimal
     private Double interestRate;
 
     @NotNull(message = "Duration is required")
