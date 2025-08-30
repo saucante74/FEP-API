@@ -9,19 +9,14 @@
 
 ## ⚙️ Docker
 
-1.**Run MYSQL container only (DEV environment)**
+1.**Run all project (without changes)**
 ```bash
-docker-compose -f docker-compose.dev.yml up -d
-```
-
-2.**Run all project**
-```bash
-./gradlew clean bootJar
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
-3.**Relaunch prod**
+2.**Relaunch prod (with latest changes)**
 ```bash
+./gradlew clean bootJar
 docker compose -f docker-compose.prod.yml down -v 
 docker compose -f docker-compose.prod.yml up --build -d           
 ```
