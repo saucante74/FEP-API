@@ -90,7 +90,10 @@ public class LoanService {
                 .id(loan.getId())
                 .reference(loan.getReference())
                 .amount(loan.getAmount())
-                .interestRate(loan.getInterestRate())
+                .interestRate(
+                        loan.getInterestRate() == null ? null :
+                                Math.round(loan.getInterestRate() * 100.0) / 100.0
+                )
                 .durationInMonths(loan.getDurationInMonths())
                 .status(loan.getStatus() != null ? loan.getStatus().name() : null)
                 .borrower(
