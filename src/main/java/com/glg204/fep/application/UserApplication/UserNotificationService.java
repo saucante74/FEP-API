@@ -33,7 +33,6 @@ public class UserNotificationService {
         String subject = "Réinitialisation de votre mot de passe";
         String body = "Bonjour " + user.getFirstName() + ",\n\n" +
                 "Cliquez sur le lien suivant pour réinitialiser votre mot de passe : " + resetLink;
-
         mailService.send(user.getEmail(), subject, body);
     }
 

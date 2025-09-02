@@ -9,6 +9,7 @@ import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
 import com.glg204.fep.infrastructure.security.jwt.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,8 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
+    @Value("${frontend.base-url}")
+    private String frontendBaseUrl;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -82,7 +85,7 @@ public class AuthenticationController {
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
         PasswordResetToken resetToken = passwordResetService.createToken(user);
-        String resetLink = "http://localhost:8080/reset-password?token=" + resetToken.getToken();
+        String resetLink = frontendBaseUrl + "/auth/update-password?token=" + resetToken.getToken();
 
         userNotificationService.sendPasswordResetMail(user, resetLink);
 
