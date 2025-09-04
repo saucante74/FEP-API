@@ -65,7 +65,7 @@ public class DataLoader implements CommandLineRunner {
                 .firstName("David").lastName("Moreau")
                 .username("David85")
                 .email("david@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.LENDER).status(UserStatus.PENDING_VALIDATION)
+                .role(UserRole.ADMIN).status(UserStatus.VALIDATED)
                 .createdAt(LocalDateTime.now().minusMonths(1)).build());
 
         for (int i = 1; i <= 15; i++) {
