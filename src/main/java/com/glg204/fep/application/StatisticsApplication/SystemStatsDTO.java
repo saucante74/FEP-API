@@ -1,4 +1,4 @@
-package com.glg204.fep.application.DashboardApplication;
+package com.glg204.fep.application.StatisticsApplication;
 
 import lombok.Builder;
 import lombok.Data;

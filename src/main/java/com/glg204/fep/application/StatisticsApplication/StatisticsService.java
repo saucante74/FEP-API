@@ -1,4 +1,4 @@
-package com.glg204.fep.application.DashboardApplication;
+package com.glg204.fep.application.StatisticsApplication;
 
 import com.glg204.fep.domain.LoanDomain.*;
 import com.glg204.fep.domain.RefundDomain.Refund;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DashboardService {
+public class StatisticsService {
 
     private final LoanRepository loanRepository;
     private final RefundRepository refundRepository;
@@ -24,15 +24,6 @@ public class DashboardService {
     private final ReportRepository reportRepository;
     private final LoanDomainService loanDomainService = new LoanDomainService();
     private final RefundDomainService refundDomainService = new RefundDomainService();
-
-    public DashboardStatsDTO getDashboardStats() {
-        return DashboardStatsDTO.builder()
-                .global(getGlobalStats())
-                .financial(getFinancialStats())
-                .refunds(getRefundStats())
-                .system(getSystemStats())
-                .build();
-    }
 
     public GlobalStatsDTO getGlobalStats() {
         List<Loan> loans = loanRepository.findAll();

@@ -1,6 +1,6 @@
 package com.glg204.fep.domain.RefundDomain;
 
-import com.glg204.fep.application.DashboardApplication.RefundStatsDTO;
+import com.glg204.fep.application.StatisticsApplication.RefundStatsDTO;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
