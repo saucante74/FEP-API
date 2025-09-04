@@ -1,18 +1,33 @@
 package com.glg204.fep.application.DashboardApplication.user;
 
-import com.glg204.fep.application.StatisticsApplication.FinancialStatsDTO;
-import com.glg204.fep.application.StatisticsApplication.GlobalStatsDTO;
-import com.glg204.fep.application.StatisticsApplication.RefundStatsDTO;
-import com.glg204.fep.application.StatisticsApplication.SystemStatsDTO;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Builder
 public class UserDashboardStatsDTO {
-    private GlobalStatsDTO global;
-    private FinancialStatsDTO financial;
-    private RefundStatsDTO refunds;
-    private SystemStatsDTO system;
+
+    private int totalAmount;
+    private String amountLabel;
+    private int totalInterests;
+    private String interestsLabel;
+    private int activeLoansAmount;
+    private int totalLoansCount;
+    private int totalRefundsMade;
+    private int totalRefundsReceived;
+    private int loansInProgress;
+    private int lateRefundsCount;
+    private List<UpcomingRefundDTO> upcomingRefunds;
+
+    @Data @Builder
+    public static class UpcomingRefundDTO {
+        private String dueDate;
+        private int amount;
+        private String status;
+        private String counterparty;
+    }
 }
+
 
