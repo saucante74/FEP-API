@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,7 +65,7 @@ public class AuthenticationController {
         userRepository.save(user);
         userNotificationService.sendRegistrationMail(user);
 
-        var jwt = jwtService.generateToken(user.getUsername());
+        var jwt = jwtService.generateToken(user);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
@@ -74,9 +75,15 @@ public class AuthenticationController {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
-        var jwt = jwtService.generateToken(request.getEmail());
+
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        var jwt = jwtService.generateToken(user);
+
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
+
 
 
     @PostMapping("/reset-password-request")
