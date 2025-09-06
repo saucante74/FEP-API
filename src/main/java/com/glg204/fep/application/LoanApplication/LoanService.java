@@ -51,6 +51,16 @@ public class LoanService {
                 .collect(Collectors.toList());
     }
 
+    public List<LoanResponseDTO> getLoansByUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        return loanRepository.findByLenderOrBorrower(user, user).stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+
     public LoanResponseDTO getLoanById(Long id) {
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Loan not found"));

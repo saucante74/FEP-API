@@ -168,6 +168,89 @@ public class DataLoader implements CommandLineRunner {
                         .build()
         ));
 
+        User emilie = userRepository.save(User.builder()
+                .firstName("Émilie").lastName("Lemoine")
+                .username("emilie33")
+                .email("emilie@example.com").password(passwordEncoder.encode("secret"))
+                .role(UserRole.LENDER).status(UserStatus.VALIDATED)
+                .createdAt(LocalDateTime.now().minusWeeks(5)).build());
+
+        User franck = userRepository.save(User.builder()
+                .firstName("Franck").lastName("Petit")
+                .username("franck22")
+                .email("franck@example.com").password(passwordEncoder.encode("secret"))
+                .role(UserRole.BORROWER).status(UserStatus.VALIDATED)
+                .createdAt(LocalDateTime.now().minusWeeks(4)).build());
+
+        User helene = userRepository.save(User.builder()
+                .firstName("Hélène").lastName("Roux")
+                .username("helene11")
+                .email("helene@example.com").password(passwordEncoder.encode("secret"))
+                .role(UserRole.BORROWER).status(UserStatus.VALIDATED)
+                .createdAt(LocalDateTime.now().minusWeeks(3)).build());
+
+        User julien = userRepository.save(User.builder()
+                .firstName("Julien").lastName("Giraud")
+                .username("julien99")
+                .email("julien@example.com").password(passwordEncoder.encode("secret"))
+                .role(UserRole.LENDER).status(UserStatus.VALIDATED)
+                .createdAt(LocalDateTime.now().minusWeeks(2)).build());
+
+        Loan loan1 = loanRepository.save(Loan.builder()
+                .reference("LN-20250901-0001")
+                .amount(BigDecimal.valueOf(1500))
+                .interestRate(2.5)
+                .durationInMonths(12)
+                .startDate(LocalDate.now().minusMonths(1))
+                .status(LoanStatus.IN_PROGRESS)
+                .lender(emilie)
+                .borrower(franck)
+                .build());
+
+        refundRepository.save(Refund.builder()
+                .loan(loan1)
+                .refundDate(LocalDate.now().plusDays(15).atStartOfDay())
+                .amount(300)
+                .status(RefundStatus.PAID)
+                .build());
+
+        Loan loan2 = loanRepository.save(Loan.builder()
+                .reference("LN-20250901-0002")
+                .amount(BigDecimal.valueOf(1000))
+                .interestRate(3.0)
+                .durationInMonths(6)
+                .startDate(LocalDate.now().minusWeeks(2))
+                .status(LoanStatus.PENDING)
+                .lender(julien)
+                .borrower(helene)
+                .build());
+
+        refundRepository.save(Refund.builder()
+                .loan(loan2)
+                .refundDate(LocalDate.now().plusDays(30).atStartOfDay())
+                .amount(250)
+                .status(RefundStatus.COMPLETED)
+                .build());
+
+        reportRepository.saveAll(List.of(
+                Report.builder()
+                        .reason(ReportReason.SPAM)
+                        .reporter(emilie)
+                        .reportedUser(franck)
+                        .reportDate(LocalDateTime.now().minusDays(5))
+                        .isOpen(true)
+                        .build(),
+
+                Report.builder()
+                        .reason(ReportReason.ABUSE)
+                        .reporter(julien)
+                        .reportedUser(helene)
+                        .reportDate(LocalDateTime.now().minusDays(3))
+                        .isOpen(false)
+                        .build()
+        ));
+
+
 
         System.out.println("✅ Fixtures OK ✅");
     }

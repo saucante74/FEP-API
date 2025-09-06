@@ -3,14 +3,18 @@ package com.glg204.fep.application.RefundApplication;
 import com.glg204.fep.domain.LoanDomain.Loan;
 import com.glg204.fep.domain.RefundDomain.Refund;
 import com.glg204.fep.domain.RefundDomain.RefundStatus;
+import com.glg204.fep.domain.UserDomain.User;
 import com.glg204.fep.infrastructure.LoanInfrastructure.LoanRepository;
 import com.glg204.fep.infrastructure.RefundInfrastructure.RefundRepository;
+import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +23,7 @@ public class RefundService {
 
     private final RefundRepository refundRepository;
     private final LoanRepository loanRepository;
+    private final UserRepository userRepository;
     private final RefundNotificationService refundNotificationService;
 
     public RefundResponseDTO createRefund(RefundRequestDTO dto) {
@@ -49,6 +54,26 @@ public class RefundService {
         return refundRepository.findById(id)
                 .map(this::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("Refund not found"));
+    }
+
+    public List<RefundResponseDTO> getRefundsByLoan(Long loanId) {
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new NoSuchElementException("Loan not found"));
+
+        return refundRepository.findByLoan(loan).stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<RefundResponseDTO> getRefundsForCurrentUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        List<Refund> refunds = refundRepository.findByUserInvolved(user);
+
+        return refunds.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
