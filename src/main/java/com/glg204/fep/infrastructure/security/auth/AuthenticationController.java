@@ -66,7 +66,13 @@ public class AuthenticationController {
         userNotificationService.sendRegistrationMail(user);
 
         var jwt = jwtService.generateToken(user);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(new AuthenticationResponse(
+                jwt,
+                user.getFirstName(),
+                user.getLastName(),
+                user.getRole().name(),
+                user.getEmail()
+        ));
     }
 
 
@@ -81,7 +87,13 @@ public class AuthenticationController {
 
         var jwt = jwtService.generateToken(user);
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(new AuthenticationResponse(
+                jwt,
+                user.getFirstName(),
+                user.getLastName(),
+                user.getRole().name(),
+                user.getEmail()
+        ));
     }
 
 

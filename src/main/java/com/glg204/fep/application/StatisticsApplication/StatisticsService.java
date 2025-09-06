@@ -133,7 +133,7 @@ public class StatisticsService {
                 .sorted(Comparator.comparing(Refund::getRefundDate))
                 .limit(5)
                 .map(r -> UserDashboardStatsDTO.UpcomingRefundDTO.builder()
-                        .dueDate(r.getRefundDate().toLocalDate().toString())
+                        .dueDate(r.getRefundDate())
                         .amount((int) Math.round(r.getAmount()))
                         .status(r.getStatus() != null ? r.getStatus().name() : "UNKNOWN")
                         .counterparty(isLender

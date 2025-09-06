@@ -3,6 +3,7 @@ package com.glg204.fep.application.DashboardApplication.user;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -23,7 +24,7 @@ public class UserDashboardStatsDTO {
 
     @Data @Builder
     public static class UpcomingRefundDTO {
-        private String dueDate;
+        private LocalDateTime dueDate;
         private int amount;
         private String status;
         private String counterparty;
