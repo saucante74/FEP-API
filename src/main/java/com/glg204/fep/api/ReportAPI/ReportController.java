@@ -39,9 +39,9 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getReportById(id));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ReportResponseDTO>> getReportsByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(reportService.getReportsByUser(userId));
+    @GetMapping("/user")
+    public ResponseEntity<List<ReportResponseDTO>> getReportsByUser() {
+        return ResponseEntity.ok(reportService.getReportsByUser());
     }
 
     @PutMapping("/{id}")

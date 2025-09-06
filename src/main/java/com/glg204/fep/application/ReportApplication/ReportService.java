@@ -7,6 +7,7 @@ import com.glg204.fep.infrastructure.ReportInfrastructure.ReportRepository;
 import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -55,9 +56,8 @@ public class ReportService {
     }
 
 
-    public List<ReportResponseDTO> getReportsByUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    public List<ReportResponseDTO> getReportsByUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         List<Report> reports = reportRepository.findByReporterOrReportedUser(user, user);
 
