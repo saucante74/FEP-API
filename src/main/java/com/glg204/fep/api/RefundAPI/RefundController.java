@@ -32,6 +32,16 @@ public class RefundController {
         return ResponseEntity.ok(refundService.getRefundById(id));
     }
 
+    @GetMapping("/loan/{loanId}")
+    public ResponseEntity<List<RefundResponseDTO>> getRefundsByLoan(@PathVariable Long loanId) {
+        return ResponseEntity.ok(refundService.getRefundsByLoan(loanId));
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<RefundResponseDTO>> getRefundsByUser() {
+        return ResponseEntity.ok(refundService.getRefundsForCurrentUser());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<RefundResponseDTO> updateRefund(
             @Valid
@@ -46,4 +56,5 @@ public class RefundController {
         refundService.deleteRefund(id);
         return ResponseEntity.noContent().build();
     }
+
 }

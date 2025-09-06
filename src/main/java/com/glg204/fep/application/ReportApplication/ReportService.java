@@ -6,8 +6,10 @@ import com.glg204.fep.domain.UserDomain.User;
 import com.glg204.fep.infrastructure.ReportInfrastructure.ReportRepository;
 import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,6 +53,19 @@ public class ReportService {
                 .map(this::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("Report not found"));
     }
+
+
+    public List<ReportResponseDTO> getReportsByUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        List<Report> reports = reportRepository.findByReporterOrReportedUser(user, user);
+
+        return reports.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
 
     @Transactional
     public ReportResponseDTO updateReport(Long id, ReportRequestDTO dto) {
