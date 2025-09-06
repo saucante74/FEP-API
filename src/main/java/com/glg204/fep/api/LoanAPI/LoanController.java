@@ -36,9 +36,9 @@ public class LoanController {
         return ResponseEntity.ok(loanService.getLoanById(id));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<LoanResponseDTO>> getLoansByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(loanService.getLoansByUser(userId));
+    @GetMapping("/user")
+    public ResponseEntity<List<LoanResponseDTO>> getLoansByUser() {
+        return ResponseEntity.ok(loanService.getLoansByUser());
     }
 
     @PutMapping("/{id}")

@@ -8,6 +8,7 @@ import com.glg204.fep.domain.UserDomain.User;
 import com.glg204.fep.infrastructure.LoanInfrastructure.LoanRepository;
 import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,9 +52,8 @@ public class LoanService {
                 .collect(Collectors.toList());
     }
 
-    public List<LoanResponseDTO> getLoansByUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+    public List<LoanResponseDTO> getLoansByUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return loanRepository.findByLenderOrBorrower(user, user).stream()
                 .map(this::toDto)
