@@ -1,7 +1,5 @@
-package com.glg204.fep.domain;
+package com.glg204.fep.domain.UserDomain;
 
-import com.glg204.fep.domain.UserDomain.PasswordResetToken;
-import com.glg204.fep.domain.UserDomain.User;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
