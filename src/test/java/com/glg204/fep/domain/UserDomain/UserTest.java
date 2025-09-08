@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserTest {
 
     @Test
-    void testUserAuthorities() {
+    void testUserAuthrities() {
         User user = User.builder()
                 .email("test@example.com")
                 .role(UserRole.ADMIN)

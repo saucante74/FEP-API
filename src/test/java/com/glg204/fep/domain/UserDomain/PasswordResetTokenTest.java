@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PasswordResetTokenTest {
 
     @Test
-    void testTokenIsExpired() {
+    void testTokenISExpired() {
         PasswordResetToken token = PasswordResetToken.builder()
                 .token("abc123")
                 .expiryDate(LocalDateTime.now().minusMinutes(1))
