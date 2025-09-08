@@ -41,7 +41,7 @@ public class ReportController {
 
     @GetMapping("/user")
     public ResponseEntity<List<ReportResponseDTO>> getReportsByUser() {
-        return ResponseEntity.ok(reportService.getReportsByUser());
+        return ResponseEntity.ok(reportService.getReportsByReporter());
     }
 
     @PutMapping("/{id}")
