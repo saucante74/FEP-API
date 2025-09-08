@@ -66,6 +66,17 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
+    public List<ReportResponseDTO> getReportsByReporter() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        List<Report> reports = reportRepository.findByReporter(user);
+
+        return reports.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+
 
     @Transactional
     public ReportResponseDTO updateReport(Long id, ReportRequestDTO dto) {
