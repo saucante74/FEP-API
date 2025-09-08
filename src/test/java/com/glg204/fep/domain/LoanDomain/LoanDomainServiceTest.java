@@ -58,7 +58,7 @@ class LoanDomainServiceTest {
     }
 
     @Test
-    void testGenerateReferenceFormat() {
+    void testGenerateReferenceText() {
         String ref = LoanDomainService.generateReference();
         assertTrue(ref.startsWith("LN-"));
         assertTrue(ref.matches("LN-\\d{8}-\\d{9}\\-[A-Z0-9]{4}"));
