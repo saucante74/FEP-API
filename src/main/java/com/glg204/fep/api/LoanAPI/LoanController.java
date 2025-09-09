@@ -6,6 +6,7 @@ import com.glg204.fep.application.LoanApplication.LoanService;
 import com.glg204.fep.domain.UserDomain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,12 @@ public class LoanController {
                                                       @RequestBody LoanRequestDTO dto) {
         return ResponseEntity.ok(loanService.updateLoan(id, dto));
     }
+
+    @PatchMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<LoanResponseDTO> patchLoan(@PathVariable Long id) {
+        return ResponseEntity.ok(loanService.patchLoan(id));
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLoan(@PathVariable Long id) {

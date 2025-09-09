@@ -24,22 +24,19 @@ public class LoanService {
     private final LoanNotificationService loanNotificationService;
 
     public LoanResponseDTO createLoan(LoanRequestDTO dto, User lender) {
-        User borrower = userRepository.findById(dto.getBorrowerId())
-                .orElseThrow(() -> new NoSuchElementException("Borrower not found"));
-
         Loan loan = new Loan();
         loan.setAmount(dto.getAmount());
         loan.setInterestRate(dto.getInterestRate());
         loan.setDurationInMonths(dto.getDurationInMonths());
-        loan.setStatus(LoanStatus.PENDING);
+        loan.setStatus(LoanStatus.IN_PROGRESS);
         loan.setLender(lender);
-        loan.setBorrower(borrower);
+        loan.setBorrower(null);
         loan.setReference(LoanDomainService.generateReference());
 
         loanRepository.save(loan);
         loanNotificationService.sendLoanRequestCreatedMail(
-                borrower.getEmail(),
-                borrower.getFirstName(),
+                lender.getEmail(),
+                lender.getFirstName(),
                 loan.getReference()
         );
 
@@ -78,6 +75,19 @@ public class LoanService {
         loan.setInterestRate(dto.getInterestRate());
         loan.setDurationInMonths(dto.getDurationInMonths());
         loan.setStatus(LoanStatus.valueOf(String.valueOf(dto.getStatus())));
+        loan.setBorrower(borrower);
+
+        loanRepository.save(loan);
+        return toDto(loan);
+    }
+
+    public LoanResponseDTO patchLoan(Long id) {
+        Loan loan = loanRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Loan not found"));
+
+        User borrower = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        loan.setStatus(LoanStatus.PENDING);
         loan.setBorrower(borrower);
 
         loanRepository.save(loan);

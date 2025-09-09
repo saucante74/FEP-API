@@ -27,9 +27,7 @@ public class LoanRequestDTO {
     @Max(value = 120, message = "Duration must not exceed 120 months (10 years)")
     private Integer durationInMonths;
 
-    @NotNull(message = "Status is required")
     private LoanStatus status;
 
-    @NotNull(message = "Borrower ID is required")
     private Long borrowerId;
 }

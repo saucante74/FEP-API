@@ -2,6 +2,7 @@ package com.glg204.fep.domain.LoanDomain;
 
 import com.glg204.fep.domain.UserDomain.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Null;
 import lombok.*;
 
 import java.math.BigDecimal;
