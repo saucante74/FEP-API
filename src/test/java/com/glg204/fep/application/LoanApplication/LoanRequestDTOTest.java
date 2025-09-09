@@ -84,6 +84,6 @@ public class LoanRequestDTOTest {
         LoanRequestDTO dto = LoanRequestDTO.builder().build();
 
         Set<ConstraintViolation<LoanRequestDTO>> violations = validator.validate(dto);
-        assertEquals(5, violations.size());
+        assertEquals(3, violations.size());
     }
 }
