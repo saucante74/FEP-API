@@ -30,3 +30,8 @@ docker compose -f docker-compose.dev.yml up --build -d
 ```bash
 ./gradlew test     
 ```
+
+4.**Launch Project**
+```bash
+./gradlew bootRun
+```
