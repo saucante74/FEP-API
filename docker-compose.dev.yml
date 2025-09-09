@@ -3,7 +3,7 @@ services:
   mysql:
     image: mysql:8.3
     restart: unless-stopped
-    container_name: fep-db-mysql
+    container_name: fep-local-db-mysql
     env_file: ./.env
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
@@ -12,3 +12,11 @@ services:
       - "3307:3306"
     volumes:
       - .data/db:/var/lib/mysql
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: fep-local-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    restart: unless-stopped

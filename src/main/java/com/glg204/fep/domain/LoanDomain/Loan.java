@@ -2,6 +2,7 @@ package com.glg204.fep.domain.LoanDomain;
 
 import com.glg204.fep.domain.UserDomain.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Null;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -18,8 +19,9 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String reference;
     private BigDecimal amount;
-    private Double interestRate; // en pourcentage
+    private Double interestRate;
     private Integer durationInMonths;
 
     private LocalDate startDate;
