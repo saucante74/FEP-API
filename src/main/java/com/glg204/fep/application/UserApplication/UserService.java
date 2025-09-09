@@ -9,26 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-//    private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
-
-    public User createUser(UserDTO dto) {
-        User user = new User();
-        user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole(dto.getRole());
-        user.setStatus(UserStatus.PENDING_VALIDATION);
-        user.setCreatedAt(LocalDateTime.now());
-
-        return userRepository.save(user);
-    }
 
     public UserResponseDTO getUserById(Long id) {
         User user = userRepository.findById(id)
@@ -85,7 +72,6 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow();
         user.setStatus(UserStatus.VALIDATED);
         userRepository.save(user);
-//        mailService.sendValidationEmail(user);
     }
 
     private UserResponseDTO toDto(User user) {
