@@ -25,3 +25,8 @@ docker compose -f docker-compose.prod.yml up --build -d
 ```bash
 docker compose -f docker-compose.dev.yml up --build -d          
 ```
+
+4.**Launch tests**
+```bash
+./gradlew test     
+```
