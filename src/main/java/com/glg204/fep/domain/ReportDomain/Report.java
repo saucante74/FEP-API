@@ -1,5 +1,6 @@
 package com.glg204.fep.domain.ReportDomain;
 
+import com.glg204.fep.domain.LoanDomain.Loan;
 import com.glg204.fep.domain.UserDomain.User;
 import lombok.*;
 import jakarta.persistence.*;
@@ -21,6 +22,10 @@ public class Report {
     @ManyToOne
     @JoinColumn(name = "reported_user_id")
     private User reportedUser;
+
+    @ManyToOne
+    @JoinColumn(name = "reported_loan_id")
+    private Loan reportedLoan;
 
     @ManyToOne
     @JoinColumn(name = "reporter_id")

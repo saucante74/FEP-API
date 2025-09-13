@@ -12,7 +12,11 @@ public class ReportResponseDTO {
     private Long id;
     private ReportReason reason;
     private String reporterEmail;
+    private String reporterId;
     private String reportedUserEmail;
+    private String reportedUserId;
+    private String reportedLoanReference;
+    private String reportedLoanId;
     private LocalDateTime reportDate;
     private boolean open;
 }

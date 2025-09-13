@@ -61,15 +61,16 @@ public class DataLoader implements CommandLineRunner {
                 .role(UserRole.BORROWER).status(UserStatus.PENDING_VALIDATION)
                 .createdAt(LocalDateTime.now().minusMonths(2)).build());
 
-        User david = userRepository.save(User.builder()
-                .firstName("David").lastName("Moreau")
-                .username("David85")
-                .email("david@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.ADMIN).status(UserStatus.VALIDATED)
-                .createdAt(LocalDateTime.now().minusMonths(1)).build());
+        User julien = userRepository.save(User.builder()
+                .firstName("Julien").lastName("Giraud")
+                .username("julien99")
+                .email("julien@example.com").password(passwordEncoder.encode("secret"))
+                .role(UserRole.LENDER).status(UserStatus.VALIDATED)
+                .createdAt(LocalDateTime.now().minusWeeks(2)).build());
+
 
         for (int i = 1; i <= 15; i++) {
-            User lender = (i % 2 == 0) ? alice : david;
+            User lender = (i % 2 == 0) ? alice : julien;
             User borrower = (i % 3 == 0) ? bob : claire;
 
             Loan loan = loanRepository.save(Loan.builder()
@@ -94,80 +95,6 @@ public class DataLoader implements CommandLineRunner {
             }
         }
 
-        reportRepository.saveAll(List.of(
-                Report.builder()
-                        .reason(ReportReason.FRAUD)
-                        .reporter(alice)
-                        .reportedUser(bob)
-                        .reportDate(LocalDateTime.now().minusDays(10))
-                        .isOpen(true)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.SPAM)
-                        .reporter(claire)
-                        .reportedUser(alice)
-                        .reportDate(LocalDateTime.now().minusDays(8))
-                        .isOpen(true)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.ABUSE)
-                        .reporter(bob)
-                        .reportedUser(david)
-                        .reportDate(LocalDateTime.now().minusDays(7))
-                        .isOpen(false)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.FRAUD)
-                        .reporter(david)
-                        .reportedUser(claire)
-                        .reportDate(LocalDateTime.now().minusDays(6))
-                        .isOpen(true)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.SPAM)
-                        .reporter(alice)
-                        .reportedUser(claire)
-                        .reportDate(LocalDateTime.now().minusDays(5))
-                        .isOpen(true)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.ABUSE)
-                        .reporter(bob)
-                        .reportedUser(alice)
-                        .reportDate(LocalDateTime.now().minusDays(4))
-                        .isOpen(false)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.FRAUD)
-                        .reporter(claire)
-                        .reportedUser(bob)
-                        .reportDate(LocalDateTime.now().minusDays(3))
-                        .isOpen(true)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.SPAM)
-                        .reporter(david)
-                        .reportedUser(alice)
-                        .reportDate(LocalDateTime.now().minusDays(2))
-                        .isOpen(false)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.ABUSE)
-                        .reporter(alice)
-                        .reportedUser(david)
-                        .reportDate(LocalDateTime.now().minusDays(1))
-                        .isOpen(true)
-                        .build()
-        ));
-
         User emilie = userRepository.save(User.builder()
                 .firstName("Émilie").lastName("Lemoine")
                 .username("emilie33")
@@ -189,12 +116,12 @@ public class DataLoader implements CommandLineRunner {
                 .role(UserRole.BORROWER).status(UserStatus.VALIDATED)
                 .createdAt(LocalDateTime.now().minusWeeks(3)).build());
 
-        User julien = userRepository.save(User.builder()
-                .firstName("Julien").lastName("Giraud")
-                .username("julien99")
-                .email("julien@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.LENDER).status(UserStatus.VALIDATED)
-                .createdAt(LocalDateTime.now().minusWeeks(2)).build());
+        User david = userRepository.save(User.builder()
+                .firstName("David").lastName("Moreau")
+                .username("David85")
+                .email("david@example.com").password(passwordEncoder.encode("secret"))
+                .role(UserRole.ADMIN).status(UserStatus.VALIDATED)
+                .createdAt(LocalDateTime.now().minusMonths(1)).build());
 
         Loan loan1 = loanRepository.save(Loan.builder()
                 .reference("LN-20250901-0001")
