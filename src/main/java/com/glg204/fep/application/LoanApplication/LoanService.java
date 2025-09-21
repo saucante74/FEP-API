@@ -28,7 +28,7 @@ public class LoanService {
         loan.setAmount(dto.getAmount());
         loan.setInterestRate(dto.getInterestRate());
         loan.setDurationInMonths(dto.getDurationInMonths());
-        loan.setStatus(LoanStatus.IN_PROGRESS);
+        loan.setStatus(LoanStatus.PENDING);
         loan.setLender(lender);
         loan.setBorrower(null);
         loan.setReference(LoanDomainService.generateReference());
@@ -81,13 +81,16 @@ public class LoanService {
         return toDto(loan);
     }
 
-    public LoanResponseDTO patchLoan(Long id) {
+    public LoanResponseDTO patchLoan(Long id, LoanRequestDTO dto) {
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Loan not found"));
 
-        User borrower = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User borrower = null;
+        if (dto.getBorrowerId() != null) {
+            borrower = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        }
 
-        loan.setStatus(LoanStatus.PENDING);
+        loan.setStatus(LoanStatus.valueOf(String.valueOf(dto.getStatus())));
         loan.setBorrower(borrower);
 
         loanRepository.save(loan);

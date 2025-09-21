@@ -79,7 +79,7 @@ public class DataLoader implements CommandLineRunner {
                     .interestRate(3.0 + random.nextDouble() * 5)
                     .durationInMonths(6 + random.nextInt(36))
                     .startDate(LocalDate.now().minusMonths(random.nextInt(12)))
-                    .status((i % 5 == 0) ? LoanStatus.PENDING : LoanStatus.IN_PROGRESS)
+                    .status((i % 5 == 0) ? LoanStatus.REJECTED : LoanStatus.IN_PROGRESS)
                     .lender(lender)
                     .borrower(borrower)
                     .build());
@@ -99,21 +99,21 @@ public class DataLoader implements CommandLineRunner {
                 .firstName("Émilie").lastName("Lemoine")
                 .username("emilie33")
                 .email("emilie@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.LENDER).status(UserStatus.VALIDATED)
+                .role(UserRole.LENDER).status(UserStatus.PENDING_VALIDATION)
                 .createdAt(LocalDateTime.now().minusWeeks(5)).build());
 
         User franck = userRepository.save(User.builder()
                 .firstName("Franck").lastName("Petit")
                 .username("franck22")
                 .email("franck@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.BORROWER).status(UserStatus.VALIDATED)
+                .role(UserRole.BORROWER).status(UserStatus.PENDING_VALIDATION)
                 .createdAt(LocalDateTime.now().minusWeeks(4)).build());
 
         User helene = userRepository.save(User.builder()
                 .firstName("Hélène").lastName("Roux")
                 .username("helene11")
                 .email("helene@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.BORROWER).status(UserStatus.VALIDATED)
+                .role(UserRole.BORROWER).status(UserStatus.PENDING_VALIDATION)
                 .createdAt(LocalDateTime.now().minusWeeks(3)).build());
 
         User david = userRepository.save(User.builder()
@@ -147,7 +147,7 @@ public class DataLoader implements CommandLineRunner {
                 .interestRate(3.0)
                 .durationInMonths(6)
                 .startDate(LocalDate.now().minusWeeks(2))
-                .status(LoanStatus.PENDING)
+                .status(LoanStatus.IN_PROGRESS)
                 .lender(julien)
                 .borrower(helene)
                 .build());
