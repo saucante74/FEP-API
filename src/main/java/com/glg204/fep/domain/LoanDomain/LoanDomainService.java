@@ -1,13 +1,13 @@
 package com.glg204.fep.domain.LoanDomain;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
 public class LoanDomainService {
-
 
     private static final String PREFIX = "LN";
 
@@ -54,7 +54,6 @@ public class LoanDomainService {
 
         return String.format("%s-%s-%s", PREFIX, timestamp, uuidPart);
     }
-
 
 }
 

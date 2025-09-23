@@ -53,7 +53,7 @@ public class StatisticsService {
                 .loansInProgress((int) loans.stream()
                         .filter(l -> l.getStatus() == LoanStatus.IN_PROGRESS).count())
                 .loansRepaid((int) loans.stream()
-                        .filter(l -> l.getStatus() == LoanStatus.REPAID).count())
+                        .filter(l -> l.getStatus() == LoanStatus.APPLIED).count())
                 .refundsInProgress((int) refundRepository.count())
                 .build();
     }

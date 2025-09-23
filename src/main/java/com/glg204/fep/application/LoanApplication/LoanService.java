@@ -1,5 +1,6 @@
 package com.glg204.fep.application.LoanApplication;
 
+import com.glg204.fep.application.RefundApplication.RefundService;
 import com.glg204.fep.application.UserApplication.UserResponseDTO;
 import com.glg204.fep.domain.LoanDomain.Loan;
 import com.glg204.fep.domain.LoanDomain.LoanDomainService;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -22,6 +25,7 @@ public class LoanService {
     private final LoanRepository loanRepository;
     private final UserRepository userRepository;
     private final LoanNotificationService loanNotificationService;
+    private final RefundService refundService;
 
     public LoanResponseDTO createLoan(LoanRequestDTO dto, User lender) {
         Loan loan = new Loan();
@@ -39,6 +43,13 @@ public class LoanService {
                 lender.getFirstName(),
                 loan.getReference()
         );
+
+        BigDecimal monthlyPayment = this.calculateMonthlyPayment(
+                loan.getAmount(),
+                loan.getInterestRate(),
+                loan.getDurationInMonths()
+        );
+        refundService.generateRefundsForLoan(loan, monthlyPayment);
 
         return toDto(loan);
     }
@@ -85,7 +96,7 @@ public class LoanService {
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Loan not found"));
 
-        User borrower = null;
+        User borrower = loan.getBorrower();
         if (dto.getBorrowerId() != null) {
             borrower = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         }
@@ -145,6 +156,19 @@ public class LoanService {
                 .role(user.getRole())
                 .status(user.getStatus())
                 .build();
+    }
+
+    private BigDecimal calculateMonthlyPayment(BigDecimal amount, double annualInterestRate, int months) {
+        if (annualInterestRate == 0) {
+            return amount.divide(BigDecimal.valueOf(months), 2, RoundingMode.HALF_UP);
+        }
+
+        double monthlyRate = annualInterestRate / 100 / 12;
+        double factor = Math.pow(1 + monthlyRate, months);
+
+        double monthlyPayment = amount.doubleValue() * (monthlyRate * factor) / (factor - 1);
+
+        return BigDecimal.valueOf(monthlyPayment).setScale(2, RoundingMode.HALF_UP);
     }
 
 }

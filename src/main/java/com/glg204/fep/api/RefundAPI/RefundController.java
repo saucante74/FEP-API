@@ -1,5 +1,6 @@
 package com.glg204.fep.api.RefundAPI;
 
+import com.glg204.fep.application.RefundApplication.RefundPatchDTO;
 import com.glg204.fep.application.RefundApplication.RefundRequestDTO;
 import com.glg204.fep.application.RefundApplication.RefundResponseDTO;
 import com.glg204.fep.application.RefundApplication.RefundService;
@@ -49,6 +50,15 @@ public class RefundController {
             @RequestBody RefundRequestDTO dto
     ) {
         return ResponseEntity.ok(refundService.updateRefund(id, dto));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<RefundResponseDTO> patchRefund(
+            @Valid
+            @PathVariable Long id,
+            @RequestBody RefundPatchDTO dto
+    ) {
+        return ResponseEntity.ok(refundService.patchRefund(id, dto));
     }
 
     @DeleteMapping("/{id}")

@@ -70,7 +70,6 @@ public class DataLoader implements CommandLineRunner {
 
 
         for (int i = 1; i <= 15; i++) {
-            User lender = (i % 2 == 0) ? alice : julien;
             User borrower = (i % 3 == 0) ? bob : claire;
 
             Loan loan = loanRepository.save(Loan.builder()
@@ -80,19 +79,27 @@ public class DataLoader implements CommandLineRunner {
                     .durationInMonths(6 + random.nextInt(36))
                     .startDate(LocalDate.now().minusMonths(random.nextInt(12)))
                     .status((i % 5 == 0) ? LoanStatus.REJECTED : LoanStatus.IN_PROGRESS)
-                    .lender(lender)
+                    .lender(julien)
                     .borrower(borrower)
                     .build());
 
             int refundsCount = 3 + random.nextInt(5);
+            LocalDate startDate = loan.getStartDate();
+
             for (int r = 1; r <= refundsCount; r++) {
+                LocalDate refundBaseDate = startDate.plusMonths(r).withDayOfMonth(21);
+
+                int offset = random.nextInt(4) - 1;
+                LocalDate refundDate = refundBaseDate.plusDays(offset);
+
                 refundRepository.save(Refund.builder()
                         .loan(loan)
-                        .refundDate(LocalDate.now().plusDays(r * 15).atStartOfDay())
+                        .refundDate(refundDate.atStartOfDay())
                         .amount(200 + random.nextInt(2000))
-                        .status(randomRefundStatus())
+                        .status(RefundStatus.COMPLETED)
                         .build());
             }
+
         }
 
         User emilie = userRepository.save(User.builder()
@@ -139,24 +146,6 @@ public class DataLoader implements CommandLineRunner {
                 .refundDate(LocalDate.now().plusDays(15).atStartOfDay())
                 .amount(300)
                 .status(RefundStatus.PAID)
-                .build());
-
-        Loan loan2 = loanRepository.save(Loan.builder()
-                .reference("LN-20250901-0002")
-                .amount(BigDecimal.valueOf(1000))
-                .interestRate(3.0)
-                .durationInMonths(6)
-                .startDate(LocalDate.now().minusWeeks(2))
-                .status(LoanStatus.IN_PROGRESS)
-                .lender(julien)
-                .borrower(helene)
-                .build());
-
-        refundRepository.save(Refund.builder()
-                .loan(loan2)
-                .refundDate(LocalDate.now().plusDays(30).atStartOfDay())
-                .amount(250)
-                .status(RefundStatus.COMPLETED)
                 .build());
 
         reportRepository.saveAll(List.of(

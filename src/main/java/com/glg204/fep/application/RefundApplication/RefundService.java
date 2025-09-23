@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -23,7 +24,6 @@ public class RefundService {
 
     private final RefundRepository refundRepository;
     private final LoanRepository loanRepository;
-    private final UserRepository userRepository;
     private final RefundNotificationService refundNotificationService;
 
     public RefundResponseDTO createRefund(RefundRequestDTO dto) {
@@ -91,6 +91,29 @@ public class RefundService {
     }
 
     @Transactional
+    public RefundResponseDTO patchRefund(Long id, RefundPatchDTO dto) {
+        Refund refund = refundRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Refund not found"));
+
+        if (dto.getStatus() != null) {
+            refund.setStatus(dto.getStatus());
+        }
+
+        if (dto.getAmount() != null) {
+            refund.setAmount(dto.getAmount());
+        }
+
+        if (dto.getLoanId() != null) {
+            Loan loan = loanRepository.findById(dto.getLoanId())
+                    .orElseThrow(() -> new IllegalArgumentException("Loan not found"));
+            refund.setLoan(loan);
+        }
+
+        return toDto(refundRepository.save(refund));
+    }
+
+
+    @Transactional
     public void deleteRefund(Long id) {
         refundRepository.deleteById(id);
     }
@@ -103,5 +126,17 @@ public class RefundService {
                 .status(refund.getStatus())
                 .loanReference(refund.getLoan().getReference())
                 .build();
+    }
+
+    public void generateRefundsForLoan(Loan loan, BigDecimal monthlyPayment) {
+        for (int i = 1; i <= loan.getDurationInMonths(); i++) {
+            Refund refund = new Refund();
+            refund.setLoan(loan);
+            refund.setAmount(monthlyPayment.doubleValue());
+            refund.setRefundDate(LocalDateTime.now().plusMonths(i));
+            refund.setStatus(RefundStatus.PENDING);
+
+            refundRepository.save(refund);
+        }
     }
 }

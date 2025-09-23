@@ -5,5 +5,5 @@ public enum LoanStatus {
     VALIDATED,
     REJECTED,
     IN_PROGRESS,
-    REPAID
+    APPLIED
 }
