@@ -42,9 +42,6 @@ public class LoanDomainService {
         return (double) defaults / loans.size();
     }
 
-
-
-
     public static String generateReference() {
         LocalDateTime now = LocalDateTime.now();
 
