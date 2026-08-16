@@ -5,6 +5,8 @@
 - **JAVA 17** (`--no-standalone`)
 - **Spring Boot 3**
 
+## For launch dev environment quickly, make step 3 (cp .env.exmeple .env)
+
 ---
 
 ## ⚙️ Docker
