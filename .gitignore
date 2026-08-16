@@ -6,10 +6,11 @@ build/
 !**/src/test/**/build/
 
 .env
+.env.*
 .data
-resources/application.properties
-resources/application-local.properties
-resources/application-docker.properties
+**/resources/application.properties
+**/resources/application-local.properties
+**/resources/application-docker.properties
 
 ### STS ###
 .apt_generated
