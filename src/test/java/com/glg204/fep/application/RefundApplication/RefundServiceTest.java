@@ -2,10 +2,10 @@ package com.glg204.fep.application.RefundApplication;
 
 import com.glg204.fep.domain.LoanDomain.Loan;
 import com.glg204.fep.domain.RefundDomain.Refund;
+import com.glg204.fep.domain.RefundDomain.RefundStatus;
 import com.glg204.fep.domain.UserDomain.User;
 import com.glg204.fep.infrastructure.LoanInfrastructure.LoanRepository;
 import com.glg204.fep.infrastructure.RefundInfrastructure.RefundRepository;
-import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -24,7 +24,6 @@ public class RefundServiceTest {
 
     private RefundRepository refundRepository;
     private LoanRepository loanRepository;
-    private UserRepository userRepository;
     private RefundNotificationService refundNotificationService;
     private RefundService refundService;
 
@@ -32,9 +31,8 @@ public class RefundServiceTest {
     void setup() {
         refundRepository = mock(RefundRepository.class);
         loanRepository = mock(LoanRepository.class);
-        userRepository = mock(UserRepository.class);
         refundNotificationService = mock(RefundNotificationService.class);
-        refundService = new RefundService(refundRepository, loanRepository, userRepository, refundNotificationService);
+        refundService = new RefundService(refundRepository, loanRepository, refundNotificationService);
     }
 
     @Test
@@ -43,7 +41,7 @@ public class RefundServiceTest {
         loan.setId(1L);
         loan.setReference("LOAN123");
 
-        RefundRequestDTO dto = new RefundRequestDTO(1L, 500.0);
+        RefundRequestDTO dto = new RefundRequestDTO(1L, 500.0, RefundStatus.PENDING);
 
         when(loanRepository.findById(1L)).thenReturn(Optional.of(loan));
         when(refundRepository.save(any(Refund.class))).thenAnswer(invocation -> {
@@ -63,7 +61,7 @@ public class RefundServiceTest {
 
     @Test
     void shouldThrowWhenLoanNotFoundOnCreate() {
-        RefundRequestDTO dto = new RefundRequestDTO(99L, 100.0);
+        RefundRequestDTO dto = new RefundRequestDTO(99L, 100.0, RefundStatus.PENDING);
         when(loanRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> refundService.createRefund(dto));
@@ -97,7 +95,7 @@ public class RefundServiceTest {
         newLoan.setId(2L);
         newLoan.setReference("NEWREF");
 
-        RefundRequestDTO dto = new RefundRequestDTO(2L, 200.0);
+        RefundRequestDTO dto = new RefundRequestDTO(2L, 200.0, RefundStatus.PENDING);
 
         when(refundRepository.findById(1L)).thenReturn(Optional.of(refund));
         when(loanRepository.findById(2L)).thenReturn(Optional.of(newLoan));

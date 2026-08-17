@@ -11,10 +11,12 @@ import java.util.List;
 public class UserDashboardStatsDTO {
 
     private int totalAmount;
+    private int totalRealAmount;
     private String amountLabel;
     private int totalInterests;
     private String interestsLabel;
     private int activeLoansAmount;
+    private int realInterests;
     private int totalLoansCount;
     private int totalRefundsMade;
     private int totalRefundsReceived;

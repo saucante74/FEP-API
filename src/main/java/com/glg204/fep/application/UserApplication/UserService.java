@@ -57,6 +57,9 @@ public class UserService {
         if (updates.containsKey("role")) {
             user.setRole(UserRole.valueOf((String) updates.get("role")));
         }
+        if (updates.containsKey("status")) {
+            user.setStatus(UserStatus.valueOf((String) updates.get("status")));
+        }
         if (updates.containsKey("password")) {
             user.setPassword(passwordEncoder.encode((String) updates.get("password")));
         }

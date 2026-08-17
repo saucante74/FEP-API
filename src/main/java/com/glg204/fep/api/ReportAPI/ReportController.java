@@ -1,5 +1,6 @@
 package com.glg204.fep.api.ReportAPI;
 
+import com.glg204.fep.application.ReportApplication.ReportPatchRequestDTO;
 import com.glg204.fep.application.ReportApplication.ReportRequestDTO;
 import com.glg204.fep.application.ReportApplication.ReportResponseDTO;
 import com.glg204.fep.application.ReportApplication.ReportService;
@@ -52,6 +53,15 @@ public class ReportController {
     ) {
         return ResponseEntity.ok(reportService.updateReport(id, dto));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ReportResponseDTO> patchReport(
+            @PathVariable Long id,
+            @RequestBody ReportPatchRequestDTO dto
+    ) {
+        return ResponseEntity.ok(reportService.patchReport(id, dto));
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReport(@PathVariable Long id) {

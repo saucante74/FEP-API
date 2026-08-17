@@ -9,7 +9,7 @@
 
 ---
 
-## ⚙️ Docker
+## Docker
 
 1.**Run all project (without changes)**
 ```bash

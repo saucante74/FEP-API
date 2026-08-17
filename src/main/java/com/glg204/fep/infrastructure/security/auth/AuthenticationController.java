@@ -71,7 +71,9 @@ public class AuthenticationController {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getRole().name(),
-                user.getEmail()
+                user.getEmail(),
+                user.getStatus(),
+                user.getId()
         ));
     }
 
@@ -92,7 +94,9 @@ public class AuthenticationController {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getRole().name(),
-                user.getEmail()
+                user.getEmail(),
+                user.getStatus(),
+                user.getId()
         ));
     }
 

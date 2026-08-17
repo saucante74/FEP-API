@@ -49,8 +49,9 @@ public class LoanController {
     }
 
     @PatchMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<LoanResponseDTO> patchLoan(@PathVariable Long id) {
-        return ResponseEntity.ok(loanService.patchLoan(id));
+    public ResponseEntity<LoanResponseDTO> patchLoan(@Valid @PathVariable Long id,
+                                                     @RequestBody LoanRequestDTO dto) {
+        return ResponseEntity.ok(loanService.patchLoan(id, dto));
     }
 
 

@@ -53,7 +53,7 @@ public class StatisticsService {
                 .loansInProgress((int) loans.stream()
                         .filter(l -> l.getStatus() == LoanStatus.IN_PROGRESS).count())
                 .loansRepaid((int) loans.stream()
-                        .filter(l -> l.getStatus() == LoanStatus.REPAID).count())
+                        .filter(l -> l.getStatus() == LoanStatus.APPLIED).count())
                 .refundsInProgress((int) refundRepository.count())
                 .build();
     }
@@ -129,9 +129,13 @@ public class StatisticsService {
         boolean isLender = user.getRole() == UserRole.LENDER;
 
         return refunds.stream()
-                .filter(r -> r.getRefundDate() != null && r.getRefundDate().isAfter(java.time.LocalDateTime.now()))
+                .filter(r -> r.getRefundDate() != null
+                        && r.getRefundDate().isAfter(java.time.LocalDateTime.now())
+                        && r.getStatus() == RefundStatus.PENDING
+                        && r.getLoan().getStatus() == LoanStatus.IN_PROGRESS
+                )
                 .sorted(Comparator.comparing(Refund::getRefundDate))
-                .limit(5)
+                .limit(10)
                 .map(r -> UserDashboardStatsDTO.UpcomingRefundDTO.builder()
                         .dueDate(r.getRefundDate())
                         .amount((int) Math.round(r.getAmount()))

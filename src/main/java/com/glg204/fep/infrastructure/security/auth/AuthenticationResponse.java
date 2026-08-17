@@ -1,5 +1,7 @@
 package com.glg204.fep.infrastructure.security.auth;
 
+import com.glg204.fep.domain.LoanDomain.LoanStatus;
+import com.glg204.fep.domain.UserDomain.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +15,7 @@ public class AuthenticationResponse {
     private String lastName;
     private String role;
     private String email;
+    private UserStatus status;
+    private Long id;
 }
 

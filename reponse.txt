@@ -1,0 +1,52 @@
+## Les 4 tests passent
+
+```
+./gradlew --no-daemon test  →  BUILD SUCCESSFUL — 102 tests, 0 échec, 0 erreur
+```
+
+### 1. `LoanServiceTest.shouldCreateLoanWithhSuccess`
+
+Réécrit pour coller au comportement réel de `createLoan` :
+
+- Le prêteur porte maintenant `email` **et** `firstName` (`"Jane"`) — c'est lui le destinataire du mail. Tout le fixture `borrower` a disparu : `createLoan` fait `loan.setBorrower(null)` et ne consulte plus `userRepository`.
+- Le stub `doAnswer` sur `loanRepository.save(...)` qui forçait `"REF123"` est supprimé : il masquait la génération réelle de la référence. La vérification utilise `argThat(reference -> reference.startsWith("LN-"))` et l'assertion sur la réponse contrôle le format complet produit par `LoanDomainService.generateReference()` — `LN-<yyyyMMdd>-<HHmmssSSS>-<4 hex>` — via `matches("LN-\\d{8}-\\d{9}-[0-9A-F]{4}")`. Plus précis qu'un simple `anyString()`.
+- Ajout de deux vérifications qui manquaient sur le nouveau comportement : `verify(loanRepository).save(...)` et `verify(refundService).generateRefundsForLoan(any(Loan.class), any(BigDecimal.class))` — l'échéancier est désormais délégué à `RefundService`.
+- Ajout de `assertEquals("PENDING", response.getStatus())` et `assertNull(response.getBorrower())`, qui documentent les deux valeurs forcées par le service.
+
+### 2. `LoanServiceTest.shouldThrowExceptionWhenBorrowerNotFound`
+
+Le contrôle « emprunteur introuvable » n'existe plus dans `createLoan` — il n'y a d'ailleurs **aucune validation** dans cette méthode, la `NullPointerException` venait juste de `calculateMonthlyPayment` sur un montant null. Ce contrat a migré vers `updateLoan` (`LoanService.java:82-83`, `orElseThrow(() -> new NoSuchElementException("Borrower not found"))`).
+
+Le test est donc **reciblé** sur `updateLoan` et renommé `shouldThrowExceptionWhenBorrowerNotFoundOnUpdate` : le prêt existe (`loanRepository.findById(1L)`), l'emprunteur non (`userRepository.findById(99L)` vide), et `NoSuchElementException` est bien levée. Plutôt que d'affaiblir l'assertion en attendant une NPE, cela conserve la couverture du contrat réel. Il complète `shouldThrowExceptionWhenUpdatingNonexistingLoan`, qui couvre l'autre branche.
+
+### 3. `LoanRequestDTOTest.shouldFailValidationWhenFieldsAreMissing`
+
+`LoanRequestDTO` ne porte que **3** `@NotNull` (`amount`, `interestRate`, `durationInMonths`) ; `status` et `borrowerId` n'ont aucune contrainte, et les bornes `@DecimalMin`/`@Min`/`@Max` ne sont pas évaluées sur des valeurs nulles — d'où 3 violations et non 5.
+
+J'ai remplacé le nombre magique par une assertion sur les `propertyPath` violés :
+
+```java
+assertEquals(3, violations.size());
+assertEquals(Set.of("amount", "interestRate", "durationInMonths"), /* propriétés violées */);
+```
+
+Si une contrainte est ajoutée ou retirée du DTO, le test dira *quel* champ a changé au lieu d'un simple « attendu 3, obtenu 4 ».
+
+### 4. Hors liste : `UserDashboardServiceTest.shouldReturnCorrectStatsForLender`
+
+L'énoncé annonce 4 tests en échec mais n'en détaille que 3 ; le quatrième était celui-ci. Je l'ai corrigé aussi, sinon `develop` restait rouge.
+
+`UserDashboardService` déréférence maintenant `refund.getLoan()` en deux endroits (calcul des intérêts réels ligne 53, du montant réel ligne 76), alors que le test créait un `new Refund()` nu → NPE. Le refund est désormais rattaché au prêt avec un statut et un montant (`setLoan(loan)`, `setStatus(RefundStatus.APPROVED)`, `setAmount(100.0)`). Aucune des six assertions existantes n'est affectée : elles portent sur `totalAmount`, `totalInterests`, `loansInProgress`, `lateRefundsCount` et les deux libellés, pas sur les agrégats « réels ».
+
+**C'est un 3ᵉ fichier, au-delà des deux demandés** — dites-moi si vous préférez le laisser en l'état.
+
+### Récupérer le travail
+
+Le patch cumulatif (corrections de signatures du tour précédent **+** ces corrections comportementales, 6 fichiers, 71 insertions / 42 suppressions) :
+
+```bash
+git checkout develop && git pull
+git apply /tmp/claude-1000/-home-sebastien-Documents-Projects-FEP-FEP-API/994418bc-18d6-4e53-b343-97810fcc311c/scratchpad/fix-tests-develop.patch
+```
+
+Rien n'est commité ni poussé, et votre branche `ci/pipeline` n'a pas été touchée. Le worktree temporaire reste disponible ; je peux commiter sur une branche `fix/tests-develop` si vous le souhaitez.

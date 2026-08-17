@@ -3,6 +3,7 @@ package com.glg204.fep.application.ReportApplication;
 import com.glg204.fep.domain.ReportDomain.Report;
 import com.glg204.fep.domain.ReportDomain.ReportReason;
 import com.glg204.fep.domain.UserDomain.User;
+import com.glg204.fep.infrastructure.LoanInfrastructure.LoanRepository;
 import com.glg204.fep.infrastructure.ReportInfrastructure.ReportRepository;
 import com.glg204.fep.infrastructure.UserInfrastructure.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,7 @@ public class ReportServiceTest {
 
     private ReportRepository reportRepository;
     private UserRepository userRepository;
+    private LoanRepository loanRepository;
     private ReportNotificationService reportNotificationService;
     private ReportService reportService;
 
@@ -30,8 +32,9 @@ public class ReportServiceTest {
     void setup() {
         reportRepository = mock(ReportRepository.class);
         userRepository = mock(UserRepository.class);
+        loanRepository = mock(LoanRepository.class);
         reportNotificationService = mock(ReportNotificationService.class);
-        reportService = new ReportService(reportRepository, userRepository, reportNotificationService);
+        reportService = new ReportService(reportRepository, userRepository, loanRepository, reportNotificationService);
     }
 
     @Test

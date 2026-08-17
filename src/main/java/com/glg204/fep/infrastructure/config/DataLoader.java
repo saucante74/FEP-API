@@ -61,15 +61,15 @@ public class DataLoader implements CommandLineRunner {
                 .role(UserRole.BORROWER).status(UserStatus.PENDING_VALIDATION)
                 .createdAt(LocalDateTime.now().minusMonths(2)).build());
 
-        User david = userRepository.save(User.builder()
-                .firstName("David").lastName("Moreau")
-                .username("David85")
-                .email("david@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.ADMIN).status(UserStatus.VALIDATED)
-                .createdAt(LocalDateTime.now().minusMonths(1)).build());
+        User julien = userRepository.save(User.builder()
+                .firstName("Julien").lastName("Giraud")
+                .username("julien99")
+                .email("julien@example.com").password(passwordEncoder.encode("secret"))
+                .role(UserRole.LENDER).status(UserStatus.VALIDATED)
+                .createdAt(LocalDateTime.now().minusWeeks(2)).build());
+
 
         for (int i = 1; i <= 15; i++) {
-            User lender = (i % 2 == 0) ? alice : david;
             User borrower = (i % 3 == 0) ? bob : claire;
 
             Loan loan = loanRepository.save(Loan.builder()
@@ -78,123 +78,57 @@ public class DataLoader implements CommandLineRunner {
                     .interestRate(3.0 + random.nextDouble() * 5)
                     .durationInMonths(6 + random.nextInt(36))
                     .startDate(LocalDate.now().minusMonths(random.nextInt(12)))
-                    .status((i % 5 == 0) ? LoanStatus.PENDING : LoanStatus.IN_PROGRESS)
-                    .lender(lender)
+                    .status((i % 5 == 0) ? LoanStatus.REJECTED : LoanStatus.IN_PROGRESS)
+                    .lender(julien)
                     .borrower(borrower)
                     .build());
 
             int refundsCount = 3 + random.nextInt(5);
+            LocalDate startDate = loan.getStartDate();
+
             for (int r = 1; r <= refundsCount; r++) {
+                LocalDate refundBaseDate = startDate.plusMonths(r).withDayOfMonth(21);
+
+                int offset = random.nextInt(4) - 1;
+                LocalDate refundDate = refundBaseDate.plusDays(offset);
+
                 refundRepository.save(Refund.builder()
                         .loan(loan)
-                        .refundDate(LocalDate.now().plusDays(r * 15).atStartOfDay())
+                        .refundDate(refundDate.atStartOfDay())
                         .amount(200 + random.nextInt(2000))
-                        .status(randomRefundStatus())
+                        .status(RefundStatus.COMPLETED)
                         .build());
             }
+
         }
-
-        reportRepository.saveAll(List.of(
-                Report.builder()
-                        .reason(ReportReason.FRAUD)
-                        .reporter(alice)
-                        .reportedUser(bob)
-                        .reportDate(LocalDateTime.now().minusDays(10))
-                        .isOpen(true)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.SPAM)
-                        .reporter(claire)
-                        .reportedUser(alice)
-                        .reportDate(LocalDateTime.now().minusDays(8))
-                        .isOpen(true)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.ABUSE)
-                        .reporter(bob)
-                        .reportedUser(david)
-                        .reportDate(LocalDateTime.now().minusDays(7))
-                        .isOpen(false)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.FRAUD)
-                        .reporter(david)
-                        .reportedUser(claire)
-                        .reportDate(LocalDateTime.now().minusDays(6))
-                        .isOpen(true)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.SPAM)
-                        .reporter(alice)
-                        .reportedUser(claire)
-                        .reportDate(LocalDateTime.now().minusDays(5))
-                        .isOpen(true)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.ABUSE)
-                        .reporter(bob)
-                        .reportedUser(alice)
-                        .reportDate(LocalDateTime.now().minusDays(4))
-                        .isOpen(false)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.FRAUD)
-                        .reporter(claire)
-                        .reportedUser(bob)
-                        .reportDate(LocalDateTime.now().minusDays(3))
-                        .isOpen(true)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.SPAM)
-                        .reporter(david)
-                        .reportedUser(alice)
-                        .reportDate(LocalDateTime.now().minusDays(2))
-                        .isOpen(false)
-                        .build(),
-
-                Report.builder()
-                        .reason(ReportReason.ABUSE)
-                        .reporter(alice)
-                        .reportedUser(david)
-                        .reportDate(LocalDateTime.now().minusDays(1))
-                        .isOpen(true)
-                        .build()
-        ));
 
         User emilie = userRepository.save(User.builder()
                 .firstName("Émilie").lastName("Lemoine")
                 .username("emilie33")
                 .email("emilie@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.LENDER).status(UserStatus.VALIDATED)
+                .role(UserRole.LENDER).status(UserStatus.PENDING_VALIDATION)
                 .createdAt(LocalDateTime.now().minusWeeks(5)).build());
 
         User franck = userRepository.save(User.builder()
                 .firstName("Franck").lastName("Petit")
                 .username("franck22")
                 .email("franck@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.BORROWER).status(UserStatus.VALIDATED)
+                .role(UserRole.BORROWER).status(UserStatus.PENDING_VALIDATION)
                 .createdAt(LocalDateTime.now().minusWeeks(4)).build());
 
         User helene = userRepository.save(User.builder()
                 .firstName("Hélène").lastName("Roux")
                 .username("helene11")
                 .email("helene@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.BORROWER).status(UserStatus.VALIDATED)
+                .role(UserRole.BORROWER).status(UserStatus.PENDING_VALIDATION)
                 .createdAt(LocalDateTime.now().minusWeeks(3)).build());
 
-        User julien = userRepository.save(User.builder()
-                .firstName("Julien").lastName("Giraud")
-                .username("julien99")
-                .email("julien@example.com").password(passwordEncoder.encode("secret"))
-                .role(UserRole.LENDER).status(UserStatus.VALIDATED)
-                .createdAt(LocalDateTime.now().minusWeeks(2)).build());
+        User david = userRepository.save(User.builder()
+                .firstName("David").lastName("Moreau")
+                .username("David85")
+                .email("david@example.com").password(passwordEncoder.encode("secret"))
+                .role(UserRole.ADMIN).status(UserStatus.VALIDATED)
+                .createdAt(LocalDateTime.now().minusMonths(1)).build());
 
         Loan loan1 = loanRepository.save(Loan.builder()
                 .reference("LN-20250901-0001")
@@ -212,24 +146,6 @@ public class DataLoader implements CommandLineRunner {
                 .refundDate(LocalDate.now().plusDays(15).atStartOfDay())
                 .amount(300)
                 .status(RefundStatus.PAID)
-                .build());
-
-        Loan loan2 = loanRepository.save(Loan.builder()
-                .reference("LN-20250901-0002")
-                .amount(BigDecimal.valueOf(1000))
-                .interestRate(3.0)
-                .durationInMonths(6)
-                .startDate(LocalDate.now().minusWeeks(2))
-                .status(LoanStatus.PENDING)
-                .lender(julien)
-                .borrower(helene)
-                .build());
-
-        refundRepository.save(Refund.builder()
-                .loan(loan2)
-                .refundDate(LocalDate.now().plusDays(30).atStartOfDay())
-                .amount(250)
-                .status(RefundStatus.COMPLETED)
                 .build());
 
         reportRepository.saveAll(List.of(
