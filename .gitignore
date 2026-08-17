@@ -4,12 +4,14 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+prompt.md
 
 .env
+.env.*
 .data
-resources/application.properties
-resources/application-local.properties
-resources/application-docker.properties
+**/resources/application.properties
+**/resources/application-local.properties
+**/resources/application-docker.properties
 
 ### STS ###
 .apt_generated

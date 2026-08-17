@@ -2,6 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.4'
 	id 'io.spring.dependency-management' version '1.1.7'
+	// Code coverage: produces the reports collected by the CI pipeline
+	id 'jacoco'
 }
 
 group = 'com.example'
@@ -36,11 +38,37 @@ dependencies {
 	testImplementation 'com.h2database:h2'
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
 	testImplementation 'org.mockito:mockito-core:5.2.0'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+
+	// Readable CI logs: print the outcome of every test and the full stack
+	// trace of any failure, so a red build can be diagnosed from the job log.
+	testLogging {
+		events 'passed', 'skipped', 'failed'
+		exceptionFormat = 'full'
+		showStandardStreams = false
+	}
+
+	// Always produce the coverage report, even when tests fail, so the CI can
+	// still archive it.
+	finalizedBy tasks.named('jacocoTestReport')
+}
+
+jacoco {
+	toolVersion = '0.8.13'
+}
+
+tasks.named('jacocoTestReport') {
+	dependsOn tasks.named('test')
+	reports {
+		xml.required = true   // machine-readable, consumed by reporting tools
+		html.required = true  // human-readable, archived as a build artifact
+		csv.required = false
+	}
 }

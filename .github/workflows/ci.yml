@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  pull_request:
+    branches: ['**']
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+#concurrency:
+#  group: ci-${{ github.workflow }}-${{ github.ref }}
+#  cancel-in-progress: true
+#
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  build-and-test:
+    name: Build & Test (Java ${{ matrix.java-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: true
+      matrix:
+        java-version: ['17']
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Validate the Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: Set up JDK ${{ matrix.java-version }} (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java-version }}
+
+      - name: Set up Gradle with dependency caching
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Make the Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Run the verification suite on Java ${{ matrix.java-version }}
+        run: ./gradlew --no-daemon check
+
+      - name: Generate the JaCoCo coverage report
+        if: always()
+        run: ./gradlew --no-daemon jacocoTestReport
+
+      - name: Publish the JUnit test results
+        if: always()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: 'build/test-results/test/TEST-*.xml'
+          check_name: Test results (Java ${{ matrix.java-version }})
+          fail_on_failure: true
+
+      - name: Upload the test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-java-${{ matrix.java-version }}
+          path: |
+            build/reports/tests/test/
+            build/test-results/test/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload the JaCoCo coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports-java-${{ matrix.java-version }}
+          path: build/reports/jacoco/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Comment the coverage summary on the Pull Request
+        if: always() && github.event_name == 'pull_request'
+        uses: madrapps/jacoco-report@v1.7.1
+        with:
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Code coverage (Java ${{ matrix.java-version }})
+          min-coverage-overall: 0
+          min-coverage-changed-files: 0
