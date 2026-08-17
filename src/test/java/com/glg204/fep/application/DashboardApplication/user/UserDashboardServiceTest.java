@@ -4,6 +4,7 @@ import com.glg204.fep.application.StatisticsApplication.StatisticsService;
 import com.glg204.fep.domain.LoanDomain.Loan;
 import com.glg204.fep.domain.LoanDomain.LoanStatus;
 import com.glg204.fep.domain.RefundDomain.Refund;
+import com.glg204.fep.domain.RefundDomain.RefundStatus;
 import com.glg204.fep.domain.UserDomain.User;
 import com.glg204.fep.domain.UserDomain.UserRole;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +44,13 @@ public class UserDashboardServiceTest {
         loan.setStatus(LoanStatus.IN_PROGRESS);
         loan.setInterestRate(5.0);
 
+        // UserDashboardService now dereferences refund.getLoan() (real amount and
+        // real interests are computed per loan), so the refund must be attached to
+        // a loan and carry a status.
         Refund refund = new Refund();
+        refund.setLoan(loan);
+        refund.setStatus(RefundStatus.APPROVED);
+        refund.setAmount(100.0);
 
         try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
             SecurityContext context = mock(SecurityContext.class);

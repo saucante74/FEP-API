@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -84,6 +85,16 @@ public class LoanRequestDTOTest {
         LoanRequestDTO dto = LoanRequestDTO.builder().build();
 
         Set<ConstraintViolation<LoanRequestDTO>> violations = validator.validate(dto);
-        assertEquals(5, violations.size());
+
+        // Only amount, interestRate and durationInMonths are annotated @NotNull;
+        // status and borrowerId carry no constraint, hence 3 violations and not 5.
+        // The @DecimalMin / @Min bounds are not evaluated on null values.
+        assertEquals(3, violations.size());
+        assertEquals(
+                Set.of("amount", "interestRate", "durationInMonths"),
+                violations.stream()
+                        .map(violation -> violation.getPropertyPath().toString())
+                        .collect(Collectors.toSet())
+        );
     }
 }
